@@ -1,0 +1,50 @@
+{
+  "name": "openapi-schema-generator",
+  "description": "Generate OpenAPI schema from API Documentation",
+  "version": "0.0.1",
+  "author": "d-kimuson",
+  "main": "dist/index.js",
+  "packageManager": "pnpm@8.15.5",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-custom-rule"
+    }
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "fix": "pnpm /^fix:.*/",
+    "fix:prettier": "pnpm run:prettier --write",
+    "fix:turbo": "turbo run fix",
+    "fix:package-json": "syncpack format",
+    "fixAll:cspell": "node ./scripts/update_cspell_words.mjs",
+    "lint": "pnpm /^lint:.*/",
+    "lint:cspell": "cspell lint './**/*.{tsx,ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}' --gitignore --cache",
+    "lint:prettier": "pnpm run:prettier --check",
+    "lint:turbo": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "preinstall": "pnpm /^setup:.*/",
+    "run:prettier": "prettier .",
+    "setup:check-manager": "npx -y only-allow pnpm"
+  },
+  "devDependencies": {
+    "@actions/github": "6.0.0",
+    "@octokit/rest": "20.0.2",
+    "commitizen": "4.3.0",
+    "cspell": "7.3.9",
+    "cz-custom-rule": "workspace:*",
+    "lefthook": "1.6.7",
+    "prettier": "3.2.5",
+    "syncpack": "11.2.1",
+    "turbo": "1.12.5"
+  },
+  "engines": {
+    "npm": "forbidden, use pnpm",
+    "yarn": "forbidden, use pnpm",
+    "pnpm": ">=8.15.5",
+    "node": ">=20"
+  },
+  "keywords": [],
+  "license": "MIT"
+}
