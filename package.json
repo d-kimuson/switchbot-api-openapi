@@ -14,14 +14,14 @@
     "dev": "pnpm build --watch",
     "build": "pnpm tsp compile ./src",
     "fix": "pnpm /^fix:.*/",
-    "fix:prettier": "pnpm run:prettier --write",
+    "fix:prettier": "pnpm run:prettier . --write",
     "fixAll:cspell": "node ./scripts/update_cspell_words.mjs",
     "lint": "pnpm /^lint:.*/",
     "lint:cspell": "cspell lint './**/*.{tsx,ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}' --gitignore --cache",
-    "lint:prettier": "pnpm run:prettier --check",
+    "lint:prettier": "pnpm run:prettier . --check",
     "typecheck": "pnpm build --noEmit",
     "preinstall": "pnpm /^setup:.*/",
-    "run:prettier": "prettier --ignore-unknown --no-error-on-unmatched-pattern --cache .",
+    "run:prettier": "prettier --ignore-unknown --no-error-on-unmatched-pattern --cache",
     "setup:check-manager": "npx -y only-allow pnpm"
   },
   "dependencies": {

@@ -4,7 +4,7 @@ pre-commit:
     prettier:
       glob: "*.{tsx,ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}"
       run: |
-        pnpm prettier --write --ignore-unknown --no-error-on-unmatched-pattern --cache {staged_files}
+        pnpm run:prettier --write {staged_files}
       staged_fixed: true
       skip:
         - merge
@@ -15,16 +15,6 @@ pre-commit:
       skip:
         - merge
         - rebase
-    # eslint-sample-package:
-    #   root: "packages/sample/"
-    #   glob: "*.{tsx,ts,mts,mcs}"
-    #   staged_fixed: true
-    #   run: |
-    #     pnpm --filter sample exec eslint --ignore-unknown --cache --fix {staged_files}
-    #     git add {staged_files}
-    #   skip:
-    #     - merge
-    #     - rebase
 
 prepare-commit-msg:
   parallel: true
