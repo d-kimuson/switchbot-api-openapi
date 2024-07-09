@@ -1,7 +1,7 @@
 {
   "name": "openapi-schema-generator",
   "description": "Generate OpenAPI schema from API Documentation",
-  "version": "0.0.1",
+  "version": "1.1",
   "author": "d-kimuson",
   "main": "dist/index.js",
   "packageManager": "pnpm@8.15.5",
@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "build": "turbo run build",
+    "build": "pnpm tsp compile ./src",
     "dev": "turbo run dev",
     "fix": "pnpm /^fix:.*/",
     "fix:prettier": "pnpm run:prettier --write",
@@ -28,16 +28,24 @@
     "run:prettier": "prettier .",
     "setup:check-manager": "npx -y only-allow pnpm"
   },
+  "dependencies": {
+    "@typespec/best-practices": "0.46.0-dev.0",
+    "@typespec/compiler": "^0.57.0",
+    "@typespec/http": "^0.57.0",
+    "@typespec/openapi": "^0.57.0",
+    "@typespec/openapi3": "^0.57.0",
+    "@typespec/rest": "^0.57.0"
+  },
   "devDependencies": {
     "@actions/github": "6.0.0",
     "@octokit/rest": "20.0.2",
+    "@typespec/prettier-plugin-typespec": "^0.57.0",
     "commitizen": "4.3.0",
     "cspell": "7.3.9",
-    "cz-custom-rule": "workspace:*",
     "lefthook": "1.6.7",
     "prettier": "3.2.5",
     "syncpack": "11.2.1",
-    "turbo": "1.12.5"
+    "turbo": "2.0.6"
   },
   "engines": {
     "npm": "forbidden, use pnpm",

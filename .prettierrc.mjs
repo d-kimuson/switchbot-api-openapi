@@ -5,6 +5,8 @@ const prettierConfig = {
   trailingComma: "es5",
   semi: false,
   singleQuote: false,
+  plugins: ["@typespec/prettier-plugin-typespec"],
+  overrides: [{ files: "*.tsp", options: { parser: "typespec" } }],
 }
 
 export default prettierConfig

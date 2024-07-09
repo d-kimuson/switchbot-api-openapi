@@ -1,7 +1,0 @@
-*.cjs
-*.js
-*.mjs
-dist
-
-tsup.config.ts
-*.ts

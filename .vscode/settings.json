@@ -23,7 +23,7 @@
   "prettier.configPath": ".prettierrc.mjs",
   // autofix
   "editor.formatOnSave": false,
-  "[typescript][javascript][typescriptreact][javascriptreact][jsonc][json][markdown][mdx][yaml]": {
+  "[typescript][javascript][typescriptreact][javascriptreact][jsonc][json][markdown][mdx][yaml][typespec]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
