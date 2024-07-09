@@ -1,9 +1,9 @@
 {
-  "name": "openapi-schema-generator",
+  "name": "switchbot-api-openapi",
   "description": "Generate OpenAPI schema from API Documentation",
   "version": "1.1",
   "author": "d-kimuson",
-  "main": "dist/index.js",
+  "main": "src/main.tsp",
   "packageManager": "pnpm@8.15.5",
   "config": {
     "commitizen": {
