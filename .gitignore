@@ -89,7 +89,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -138,11 +137,5 @@ dist
 lefthook-local.yml
 .lefthook-local/**
 
-# extension
-.history
-
-# turborepo
-.turbo
-
-# env
-.env.secret
+# dist
+dist/doc
