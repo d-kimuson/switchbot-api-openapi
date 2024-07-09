@@ -11,15 +11,20 @@
     }
   },
   "scripts": {
-    "dev": "pnpm build --watch",
-    "build": "pnpm tsp compile ./src",
+    "dev": "pnpm /^dev:.*/",
+    "dev:tsp": "pnpm build:tsp --watch",
+    "dev:docs": "redocly preview-docs",
+    "build": "pnpm build:tsp && pnpm build:docs",
+    "build:tsp": "tsp compile ./src --output-dir ./dist",
+    "build:docs": "redocly build-docs -o ./dist/doc/index.html",
     "fix": "pnpm /^fix:.*/",
     "fix:prettier": "pnpm run:prettier . --write",
     "fixAll:cspell": "node ./scripts/update_cspell_words.mjs",
     "lint": "pnpm /^lint:.*/",
     "lint:cspell": "cspell lint './**/*.{tsx,ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}' --gitignore --cache",
     "lint:prettier": "pnpm run:prettier . --check",
-    "typecheck": "pnpm build --noEmit",
+    "lint:redocly": "redocly lint",
+    "typecheck": "pnpm build:tsp --noEmit",
     "preinstall": "pnpm /^setup:.*/",
     "run:prettier": "prettier --ignore-unknown --no-error-on-unmatched-pattern --cache",
     "setup:check-manager": "npx -y only-allow pnpm"
@@ -35,6 +40,7 @@
   "devDependencies": {
     "@actions/github": "6.0.0",
     "@octokit/rest": "20.0.2",
+    "@redocly/cli": "^1.17.1",
     "@typespec/prettier-plugin-typespec": "^0.57.0",
     "commitizen": "4.3.0",
     "cspell": "7.3.9",

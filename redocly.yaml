@@ -1,0 +1,13 @@
+extends:
+  - recommended
+
+apis:
+  switchbot@v1.1:
+    root: ./dist/@typespec/openapi3/openapi.yaml
+    rules:
+      operation-operationId: off
+      info-license: off
+
+theme:
+  openapi:
+    schemasExpansionLevel: 2

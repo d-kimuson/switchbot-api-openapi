@@ -18,11 +18,20 @@ using TypeSpec.Http;
 })
 @TypeSpec.OpenAPI.externalDocs("https://github.com/OpenWonderLabs/SwitchBotAPI/blob/main/README.md")
 @server("https://api.switch-bot.com", "Single server endpoint")
+@useAuth(
+  [
+    ApiKeyAuth<ApiKeyLocation.header, "Authorization">,
+    ApiKeyAuth<ApiKeyLocation.header, "sign">,
+    ApiKeyAuth<ApiKeyLocation.header, "nonce">
+  ]
+)
 namespace SwithcbotAPI;
 
 @route("/devices")
+@tag("Devices")
 namespace DevicesRoute {
-  @doc("The devices API is used to access the properties and states of SwitchBot devices and to send control commands to those devices.")
+  @summary("Get Device List")
+  @summary("The devices API is used to access the properties and states of SwitchBot devices and to send control commands to those devices.")
   @get
   op list(): SharedResponse.GetResponse<{
     @doc("a list of physical devices")
@@ -32,6 +41,7 @@ namespace DevicesRoute {
     infraredRemoteList: Device.Device[];
   }>;
 
+  @summary("Get Device Status")
   @doc("Get the status of a physical device that has been added to the current user's account.")
   @route("/{id}/status")
   @get
@@ -39,7 +49,8 @@ namespace DevicesRoute {
     @path id: string,
   ): SharedResponse.GetResponse<DeviceStatus.DeviceStatus>;
 
-  @doc("Send control commands to physical devices and virtual infrared remote devices.")
+  @summary("Send Device Control Command")
+  @summary("Send control commands to physical devices and virtual infrared remote devices.")
   @route("/{deviceId}/commands")
   @post
   op control(

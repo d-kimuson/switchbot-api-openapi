@@ -17,13 +17,14 @@
     "Omittable",
     "outdir",
     "preinstall",
+    "redocly",
     "switchbot",
     "syncpack",
     "tada",
     "tsup",
     "typecheck",
-    "Uncapitalize",
-    "typespec"
+    "typespec",
+    "Uncapitalize"
   ],
   "ignorePaths": [
     "pnpm-lock.yaml",

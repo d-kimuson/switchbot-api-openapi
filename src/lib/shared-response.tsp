@@ -14,7 +14,7 @@ model SuccessResponseBody<T> {
 model ErrorResponseBody<C extends numeric, M extends string> {
   statusCode: C;
   message: M;
-  body: null;
+  body: never;
 }
 
 @doc("Device internal error due to device states not synchronized with server")
@@ -24,10 +24,12 @@ namespace SharedResponse {
   alias GetResponse<T, OtherErrors = never> =
     | {
         @statusCode _: 200;
-        @body body: SuccessResponseBody<T>;
+        @body body: SuccessResponseBody<T> | SystemErrorResponseBody;
       }
     | {
-        @statusCode _: 190;
+        // どのステータスコードで来るか不明
+        @statusCode _: 200;
+
         @body body: SystemErrorResponseBody;
       }
     | SharedErrors.SharedErrorResponses
