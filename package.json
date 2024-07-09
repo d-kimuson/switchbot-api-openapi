@@ -7,25 +7,21 @@
   "packageManager": "pnpm@8.15.5",
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-custom-rule"
+      "path": "./node_modules/cz-conventional-changelog"
     }
   },
   "scripts": {
+    "dev": "pnpm build --watch",
     "build": "pnpm tsp compile ./src",
-    "dev": "turbo run dev",
     "fix": "pnpm /^fix:.*/",
     "fix:prettier": "pnpm run:prettier --write",
-    "fix:turbo": "turbo run fix",
-    "fix:package-json": "syncpack format",
     "fixAll:cspell": "node ./scripts/update_cspell_words.mjs",
     "lint": "pnpm /^lint:.*/",
     "lint:cspell": "cspell lint './**/*.{tsx,ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}' --gitignore --cache",
     "lint:prettier": "pnpm run:prettier --check",
-    "lint:turbo": "turbo run lint",
-    "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
+    "typecheck": "pnpm build --noEmit",
     "preinstall": "pnpm /^setup:.*/",
-    "run:prettier": "prettier .",
+    "run:prettier": "prettier --ignore-unknown --no-error-on-unmatched-pattern --cache .",
     "setup:check-manager": "npx -y only-allow pnpm"
   },
   "dependencies": {
@@ -42,10 +38,9 @@
     "@typespec/prettier-plugin-typespec": "^0.57.0",
     "commitizen": "4.3.0",
     "cspell": "7.3.9",
+    "cz-conventional-changelog": "^3.3.0",
     "lefthook": "1.6.7",
-    "prettier": "3.2.5",
-    "syncpack": "11.2.1",
-    "turbo": "2.0.6"
+    "prettier": "3.2.5"
   },
   "engines": {
     "npm": "forbidden, use pnpm",

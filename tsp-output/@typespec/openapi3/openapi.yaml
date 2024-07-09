@@ -1,8 +1,10 @@
 openapi: 3.0.0
 info:
   title: SwitchBot API
-  version: "1.1"
+  version: '1.1'
   description: SwitchBot API methods for IoT devices
+externalDocs:
+  url: https://github.com/OpenWonderLabs/SwitchBotAPI/blob/main/README.md
 tags: []
 paths:
   /devices:
@@ -11,13 +13,13 @@ paths:
       description: The devices API is used to access the properties and states of SwitchBot devices and to send control commands to those devices.
       parameters: []
       responses:
-        "190":
+        '190':
           description: Informational
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SystemErrorResponseBody"
-        "200":
+                $ref: '#/components/schemas/SystemErrorResponseBody'
+        '200':
           description: The request has succeeded.
           content:
             application/json:
@@ -44,53 +46,53 @@ paths:
                             type: array
                             items:
                               anyOf:
-                                - $ref: "#/components/schemas/Device.Bot"
-                                - $ref: "#/components/schemas/Device.Curtain"
-                                - $ref: "#/components/schemas/Device.Curtain3"
-                                - $ref: "#/components/schemas/Device.HubRelated"
-                                - $ref: "#/components/schemas/Device.Meter"
-                                - $ref: "#/components/schemas/Device.MeterPlus"
-                                - $ref: "#/components/schemas/Device.MotionSensor"
-                                - $ref: "#/components/schemas/Device.ContactSensor"
-                                - $ref: "#/components/schemas/Device.Lock"
-                                - $ref: "#/components/schemas/Device.Plug"
-                                - $ref: "#/components/schemas/Device.Remote"
-                                - $ref: "#/components/schemas/Device.Thermostat"
-                                - $ref: "#/components/schemas/Device.Camera"
-                                - $ref: "#/components/schemas/Device.Humidifier"
+                                - $ref: '#/components/schemas/Device.Bot'
+                                - $ref: '#/components/schemas/Device.Curtain'
+                                - $ref: '#/components/schemas/Device.Curtain3'
+                                - $ref: '#/components/schemas/Device.HubRelated'
+                                - $ref: '#/components/schemas/Device.Meter'
+                                - $ref: '#/components/schemas/Device.MeterPlus'
+                                - $ref: '#/components/schemas/Device.MotionSensor'
+                                - $ref: '#/components/schemas/Device.ContactSensor'
+                                - $ref: '#/components/schemas/Device.Lock'
+                                - $ref: '#/components/schemas/Device.Plug'
+                                - $ref: '#/components/schemas/Device.Remote'
+                                - $ref: '#/components/schemas/Device.Thermostat'
+                                - $ref: '#/components/schemas/Device.Camera'
+                                - $ref: '#/components/schemas/Device.Humidifier'
                             description: a list of physical devices
                           infraredRemoteList:
                             type: array
                             items:
                               anyOf:
-                                - $ref: "#/components/schemas/Device.Bot"
-                                - $ref: "#/components/schemas/Device.Curtain"
-                                - $ref: "#/components/schemas/Device.Curtain3"
-                                - $ref: "#/components/schemas/Device.HubRelated"
-                                - $ref: "#/components/schemas/Device.Meter"
-                                - $ref: "#/components/schemas/Device.MeterPlus"
-                                - $ref: "#/components/schemas/Device.MotionSensor"
-                                - $ref: "#/components/schemas/Device.ContactSensor"
-                                - $ref: "#/components/schemas/Device.Lock"
-                                - $ref: "#/components/schemas/Device.Plug"
-                                - $ref: "#/components/schemas/Device.Remote"
-                                - $ref: "#/components/schemas/Device.Thermostat"
-                                - $ref: "#/components/schemas/Device.Camera"
-                                - $ref: "#/components/schemas/Device.Humidifier"
+                                - $ref: '#/components/schemas/Device.Bot'
+                                - $ref: '#/components/schemas/Device.Curtain'
+                                - $ref: '#/components/schemas/Device.Curtain3'
+                                - $ref: '#/components/schemas/Device.HubRelated'
+                                - $ref: '#/components/schemas/Device.Meter'
+                                - $ref: '#/components/schemas/Device.MeterPlus'
+                                - $ref: '#/components/schemas/Device.MotionSensor'
+                                - $ref: '#/components/schemas/Device.ContactSensor'
+                                - $ref: '#/components/schemas/Device.Lock'
+                                - $ref: '#/components/schemas/Device.Plug'
+                                - $ref: '#/components/schemas/Device.Remote'
+                                - $ref: '#/components/schemas/Device.Thermostat'
+                                - $ref: '#/components/schemas/Device.Camera'
+                                - $ref: '#/components/schemas/Device.Humidifier'
                             description: a list of virtual infrared remote devices
                         required:
                           - deviceList
                           - infraredRemoteList
                     description: Returns an object that contains two device lists
-                  - $ref: "#/components/schemas/SharedErrors.BadRequestResponse"
-                  - $ref: "#/components/schemas/SharedErrors.UnauthorizedResponse"
-                  - $ref: "#/components/schemas/SharedErrors.ForbiddenResponse"
-                  - $ref: "#/components/schemas/SharedErrors.NotFoundResponse"
-                  - $ref: "#/components/schemas/SharedErrors.NotAcceptableResponse"
-                  - $ref: "#/components/schemas/SharedErrors.UnsupportedMediaTypeResponse"
-                  - $ref: "#/components/schemas/SharedErrors.UnprocessableEntityResponse"
-                  - $ref: "#/components/schemas/SharedErrors.TooManyRequestsResponse"
-                  - $ref: "#/components/schemas/SharedErrors.InternalServerErrorResponse"
+                  - $ref: '#/components/schemas/SharedErrors.BadRequestResponse'
+                  - $ref: '#/components/schemas/SharedErrors.UnauthorizedResponse'
+                  - $ref: '#/components/schemas/SharedErrors.ForbiddenResponse'
+                  - $ref: '#/components/schemas/SharedErrors.NotFoundResponse'
+                  - $ref: '#/components/schemas/SharedErrors.NotAcceptableResponse'
+                  - $ref: '#/components/schemas/SharedErrors.UnsupportedMediaTypeResponse'
+                  - $ref: '#/components/schemas/SharedErrors.UnprocessableEntityResponse'
+                  - $ref: '#/components/schemas/SharedErrors.TooManyRequestsResponse'
+                  - $ref: '#/components/schemas/SharedErrors.InternalServerErrorResponse'
   /devices/{deviceId}/commands:
     post:
       operationId: DevicesRoute_control
@@ -102,33 +104,33 @@ paths:
           schema:
             type: string
       responses:
-        "190":
+        '190':
           description: Informational
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SystemErrorResponseBody"
-        "200":
+                $ref: '#/components/schemas/SystemErrorResponseBody'
+        '200':
           description: The request has succeeded.
           content:
             application/json:
               schema:
                 anyOf:
-                  - $ref: "#/components/schemas/SharedErrors.BadRequestResponse"
-                  - $ref: "#/components/schemas/SharedErrors.UnauthorizedResponse"
-                  - $ref: "#/components/schemas/SharedErrors.ForbiddenResponse"
-                  - $ref: "#/components/schemas/SharedErrors.NotFoundResponse"
-                  - $ref: "#/components/schemas/SharedErrors.NotAcceptableResponse"
-                  - $ref: "#/components/schemas/SharedErrors.UnsupportedMediaTypeResponse"
-                  - $ref: "#/components/schemas/SharedErrors.UnprocessableEntityResponse"
-                  - $ref: "#/components/schemas/SharedErrors.TooManyRequestsResponse"
-                  - $ref: "#/components/schemas/SharedErrors.InternalServerErrorResponse"
-                  - $ref: "#/components/schemas/DeviceControl.DeviceTypeErrorResponseBody"
-                  - $ref: "#/components/schemas/DeviceControl.DeviceNotFoundErrorResponseBody"
-                  - $ref: "#/components/schemas/DeviceControl.CommandNotSupportedErrorResponseBody"
-                  - $ref: "#/components/schemas/DeviceControl.DeviceOfflineErrorResponseBody"
-                  - $ref: "#/components/schemas/DeviceControl.HubDeviceOfflineErrorResponseBody"
-        "201":
+                  - $ref: '#/components/schemas/SharedErrors.BadRequestResponse'
+                  - $ref: '#/components/schemas/SharedErrors.UnauthorizedResponse'
+                  - $ref: '#/components/schemas/SharedErrors.ForbiddenResponse'
+                  - $ref: '#/components/schemas/SharedErrors.NotFoundResponse'
+                  - $ref: '#/components/schemas/SharedErrors.NotAcceptableResponse'
+                  - $ref: '#/components/schemas/SharedErrors.UnsupportedMediaTypeResponse'
+                  - $ref: '#/components/schemas/SharedErrors.UnprocessableEntityResponse'
+                  - $ref: '#/components/schemas/SharedErrors.TooManyRequestsResponse'
+                  - $ref: '#/components/schemas/SharedErrors.InternalServerErrorResponse'
+                  - $ref: '#/components/schemas/DeviceControl.DeviceTypeErrorResponseBody'
+                  - $ref: '#/components/schemas/DeviceControl.DeviceNotFoundErrorResponseBody'
+                  - $ref: '#/components/schemas/DeviceControl.CommandNotSupportedErrorResponseBody'
+                  - $ref: '#/components/schemas/DeviceControl.DeviceOfflineErrorResponseBody'
+                  - $ref: '#/components/schemas/DeviceControl.HubDeviceOfflineErrorResponseBody'
+        '201':
           description: The request has succeeded and a new resource has been created as a result.
           content:
             application/json:
@@ -161,7 +163,7 @@ paths:
           application/json:
             schema:
               anyOf:
-                - $ref: "#/components/schemas/DeviceControl.BotCommand"
+                - $ref: '#/components/schemas/DeviceControl.BotCommand'
                 - type: object
                   properties:
                     commandType:
@@ -174,7 +176,7 @@ paths:
                         - setPosition
                     parameter:
                       type: string
-                      description: "mode: 0 (Performance Mode), 1 (Silent Mode), ff (default mode) position: 0~100 (0 means open, 100 means closed)"
+                      description: 'mode: 0 (Performance Mode), 1 (Silent Mode), ff (default mode) position: 0~100 (0 means open, 100 means closed)'
                   required:
                     - commandType
                     - command
@@ -194,14 +196,14 @@ paths:
                   required:
                     - commandType
                     - command
-                - $ref: "#/components/schemas/DeviceControl.HubRelatedCommand"
-                - $ref: "#/components/schemas/DeviceControl.MeterCommand"
-                - $ref: "#/components/schemas/DeviceControl.MeterPlusCommand"
-                - $ref: "#/components/schemas/DeviceControl.MotionSensorCommand"
-                - $ref: "#/components/schemas/DeviceControl.ContactSensorCommand"
-                - $ref: "#/components/schemas/DeviceControl.LockCommand"
-                - $ref: "#/components/schemas/DeviceControl.PlugCommand"
-                - $ref: "#/components/schemas/DeviceControl.RemoteCommand"
+                - $ref: '#/components/schemas/DeviceControl.HubRelatedCommand'
+                - $ref: '#/components/schemas/DeviceControl.MeterCommand'
+                - $ref: '#/components/schemas/DeviceControl.MeterPlusCommand'
+                - $ref: '#/components/schemas/DeviceControl.MotionSensorCommand'
+                - $ref: '#/components/schemas/DeviceControl.ContactSensorCommand'
+                - $ref: '#/components/schemas/DeviceControl.LockCommand'
+                - $ref: '#/components/schemas/DeviceControl.PlugCommand'
+                - $ref: '#/components/schemas/DeviceControl.RemoteCommand'
                 - type: object
                   properties:
                     commandType:
@@ -231,16 +233,16 @@ paths:
                         - setMode
                     parameter:
                       type: string
-                      description: "Mode: heat, cool, auto, off"
+                      description: 'Mode: heat, cool, auto, off'
                   required:
                     - commandType
                     - command
                     - parameter
-                - $ref: "#/components/schemas/DeviceControl.CameraCommand"
-                - $ref: "#/components/schemas/DeviceControl.HumidifierCommand"
+                - $ref: '#/components/schemas/DeviceControl.CameraCommand'
+                - $ref: '#/components/schemas/DeviceControl.HumidifierCommand'
   /devices/{id}/status:
     get:
-      operationId: DevicesRoute_readStatus
+      operationId: DevicesRoute_getStatus
       description: Get the status of a physical device that has been added to the current user's account.
       parameters:
         - name: id
@@ -249,13 +251,13 @@ paths:
           schema:
             type: string
       responses:
-        "190":
+        '190':
           description: Informational
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SystemErrorResponseBody"
-        "200":
+                $ref: '#/components/schemas/SystemErrorResponseBody'
+        '200':
           description: The request has succeeded.
           content:
             application/json:
@@ -277,30 +279,30 @@ paths:
                           - success
                       body:
                         anyOf:
-                          - $ref: "#/components/schemas/DeviceStatus.BotStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.CurtainStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.CurtainStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.HubRelatedStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.MeterStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.MeterPlusStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.MotionSensorStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.ContactSensorStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.LockStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.PlugStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.RemoteStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.ThermostatStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.CameraStatus"
-                          - $ref: "#/components/schemas/DeviceStatus.HumidifierStatus"
+                          - $ref: '#/components/schemas/DeviceStatus.BotStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.CurtainStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.CurtainStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.HubRelatedStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.MeterStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.MeterPlusStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.MotionSensorStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.ContactSensorStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.LockStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.PlugStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.RemoteStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.ThermostatStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.CameraStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.HumidifierStatus'
                     description: Returns an object that contains two device lists
-                  - $ref: "#/components/schemas/SharedErrors.BadRequestResponse"
-                  - $ref: "#/components/schemas/SharedErrors.UnauthorizedResponse"
-                  - $ref: "#/components/schemas/SharedErrors.ForbiddenResponse"
-                  - $ref: "#/components/schemas/SharedErrors.NotFoundResponse"
-                  - $ref: "#/components/schemas/SharedErrors.NotAcceptableResponse"
-                  - $ref: "#/components/schemas/SharedErrors.UnsupportedMediaTypeResponse"
-                  - $ref: "#/components/schemas/SharedErrors.UnprocessableEntityResponse"
-                  - $ref: "#/components/schemas/SharedErrors.TooManyRequestsResponse"
-                  - $ref: "#/components/schemas/SharedErrors.InternalServerErrorResponse"
+                  - $ref: '#/components/schemas/SharedErrors.BadRequestResponse'
+                  - $ref: '#/components/schemas/SharedErrors.UnauthorizedResponse'
+                  - $ref: '#/components/schemas/SharedErrors.ForbiddenResponse'
+                  - $ref: '#/components/schemas/SharedErrors.NotFoundResponse'
+                  - $ref: '#/components/schemas/SharedErrors.NotAcceptableResponse'
+                  - $ref: '#/components/schemas/SharedErrors.UnsupportedMediaTypeResponse'
+                  - $ref: '#/components/schemas/SharedErrors.UnprocessableEntityResponse'
+                  - $ref: '#/components/schemas/SharedErrors.TooManyRequestsResponse'
+                  - $ref: '#/components/schemas/SharedErrors.InternalServerErrorResponse'
 components:
   schemas:
     Device.BaseCurtain:
@@ -330,7 +332,7 @@ components:
           type: string
           description: the opening direction of a Curtain
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.BaseDevice:
       type: object
       required:
@@ -357,22 +359,22 @@ components:
       discriminator:
         propertyName: deviceType
         mapping:
-          Curtain: "#/components/schemas/Device.Curtain"
-          Curtain3: "#/components/schemas/Device.Curtain3"
-          Hub: "#/components/schemas/Device.HubRelated"
-          Hub Plus: "#/components/schemas/Device.HubRelated"
-          Hub Mini: "#/components/schemas/Device.HubRelated"
-          Hub 2: "#/components/schemas/Device.HubRelated"
-          Meter: "#/components/schemas/Device.Meter"
-          MeterPlus: "#/components/schemas/Device.MeterPlus"
-          MotionSensor: "#/components/schemas/Device.MotionSensor"
-          ContactSensor: "#/components/schemas/Device.ContactSensor"
-          Lock: "#/components/schemas/Device.Lock"
-          Plug: "#/components/schemas/Device.Plug"
-          Remote: "#/components/schemas/Device.Remote"
-          Thermostat: "#/components/schemas/Device.Thermostat"
-          Camera: "#/components/schemas/Device.Camera"
-          Humidifier: "#/components/schemas/Device.Humidifier"
+          Curtain: '#/components/schemas/Device.Curtain'
+          Curtain3: '#/components/schemas/Device.Curtain3'
+          Hub: '#/components/schemas/Device.HubRelated'
+          Hub Plus: '#/components/schemas/Device.HubRelated'
+          Hub Mini: '#/components/schemas/Device.HubRelated'
+          Hub 2: '#/components/schemas/Device.HubRelated'
+          Meter: '#/components/schemas/Device.Meter'
+          MeterPlus: '#/components/schemas/Device.MeterPlus'
+          MotionSensor: '#/components/schemas/Device.MotionSensor'
+          ContactSensor: '#/components/schemas/Device.ContactSensor'
+          Lock: '#/components/schemas/Device.Lock'
+          Plug: '#/components/schemas/Device.Plug'
+          Remote: '#/components/schemas/Device.Remote'
+          Thermostat: '#/components/schemas/Device.Thermostat'
+          Camera: '#/components/schemas/Device.Camera'
+          Humidifier: '#/components/schemas/Device.Humidifier'
     Device.Bot:
       type: object
       required:
@@ -384,7 +386,7 @@ components:
             - Bot
           description: device type
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Camera:
       type: object
       required:
@@ -407,7 +409,7 @@ components:
           type: number
           description: field of view of the camera in degrees
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.ContactSensor:
       type: object
       required:
@@ -431,7 +433,7 @@ components:
           type: number
           description: luminance value of the environment where the device is located
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Curtain:
       type: object
       required:
@@ -443,7 +445,7 @@ components:
             - Curtain
           description: device type
       allOf:
-        - $ref: "#/components/schemas/Device.BaseCurtain"
+        - $ref: '#/components/schemas/Device.BaseCurtain'
     Device.Curtain3:
       type: object
       required:
@@ -455,7 +457,7 @@ components:
             - Curtain3
           description: device type
       allOf:
-        - $ref: "#/components/schemas/Device.BaseCurtain"
+        - $ref: '#/components/schemas/Device.BaseCurtain'
     Device.HubRelated:
       type: object
       required:
@@ -470,7 +472,7 @@ components:
             - Hub 2
           description: device type
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Humidifier:
       type: object
       required:
@@ -493,7 +495,7 @@ components:
             - off
           description: current power state of the humidifier
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Lock:
       type: object
       required:
@@ -512,7 +514,7 @@ components:
             - unlocked
           description: determines if the device is locked
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Meter:
       type: object
       required:
@@ -532,7 +534,7 @@ components:
           type: number
           description: humidity level in the environment where the device is located
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.MeterPlus:
       type: object
       required:
@@ -556,7 +558,7 @@ components:
           type: number
           description: luminance value of the environment where the device is located
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.MotionSensor:
       type: object
       required:
@@ -580,7 +582,7 @@ components:
           type: number
           description: luminance value of the environment where the device is located
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Plug:
       type: object
       required:
@@ -599,7 +601,7 @@ components:
             - off
           description: determines if the plug is on or off
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Remote:
       type: object
       required:
@@ -611,7 +613,7 @@ components:
             - Remote
           description: device type
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Thermostat:
       type: object
       required:
@@ -636,7 +638,7 @@ components:
             - off
           description: current mode of the thermostat
       allOf:
-        - $ref: "#/components/schemas/Device.BaseDevice"
+        - $ref: '#/components/schemas/Device.BaseDevice'
     DeviceControl.BotCommand:
       type: object
       required:
@@ -801,7 +803,7 @@ components:
             - setVolume
         parameter:
           type: string
-          description: "Volume level: 0~100"
+          description: 'Volume level: 0~100'
     DeviceControl.HumidifierCommand:
       type: object
       required:
@@ -820,7 +822,7 @@ components:
             - setHumidity
         parameter:
           type: string
-          description: "Humidity level: 0~100"
+          description: 'Humidity level: 0~100'
     DeviceControl.LockCommand:
       type: object
       required:
@@ -926,20 +928,20 @@ components:
       discriminator:
         propertyName: deviceType
         mapping:
-          Curtain: "#/components/schemas/DeviceStatus.CurtainStatus"
-          Hub: "#/components/schemas/DeviceStatus.HubRelatedStatus"
-          Hub Plus: "#/components/schemas/DeviceStatus.HubRelatedStatus"
-          Hub Mini: "#/components/schemas/DeviceStatus.HubRelatedStatus"
-          Hub 2: "#/components/schemas/DeviceStatus.HubRelatedStatus"
-          Meter: "#/components/schemas/DeviceStatus.MeterStatus"
-          MotionSensor: "#/components/schemas/DeviceStatus.MotionSensorStatus"
-          ContactSensor: "#/components/schemas/DeviceStatus.ContactSensorStatus"
-          Lock: "#/components/schemas/DeviceStatus.LockStatus"
-          Plug: "#/components/schemas/DeviceStatus.PlugStatus"
-          Remote: "#/components/schemas/DeviceStatus.RemoteStatus"
-          Thermostat: "#/components/schemas/DeviceStatus.ThermostatStatus"
-          Camera: "#/components/schemas/DeviceStatus.CameraStatus"
-          Humidifier: "#/components/schemas/DeviceStatus.HumidifierStatus"
+          Curtain: '#/components/schemas/DeviceStatus.CurtainStatus'
+          Hub: '#/components/schemas/DeviceStatus.HubRelatedStatus'
+          Hub Plus: '#/components/schemas/DeviceStatus.HubRelatedStatus'
+          Hub Mini: '#/components/schemas/DeviceStatus.HubRelatedStatus'
+          Hub 2: '#/components/schemas/DeviceStatus.HubRelatedStatus'
+          Meter: '#/components/schemas/DeviceStatus.MeterStatus'
+          MotionSensor: '#/components/schemas/DeviceStatus.MotionSensorStatus'
+          ContactSensor: '#/components/schemas/DeviceStatus.ContactSensorStatus'
+          Lock: '#/components/schemas/DeviceStatus.LockStatus'
+          Plug: '#/components/schemas/DeviceStatus.PlugStatus'
+          Remote: '#/components/schemas/DeviceStatus.RemoteStatus'
+          Thermostat: '#/components/schemas/DeviceStatus.ThermostatStatus'
+          Camera: '#/components/schemas/DeviceStatus.CameraStatus'
+          Humidifier: '#/components/schemas/DeviceStatus.HumidifierStatus'
     DeviceStatus.BotStatus:
       type: object
       required:
@@ -976,7 +978,7 @@ components:
             - customizeMode
           description: pressMode, switchMode, or customizeMode
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.CameraStatus:
       type: object
       required:
@@ -1003,7 +1005,7 @@ components:
           type: string
           description: the current firmware version, e.g. V5.1
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.ContactSensorStatus:
       type: object
       required:
@@ -1037,7 +1039,7 @@ components:
           type: string
           description: the current firmware version, e.g. V1.3
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.CurtainStatus:
       type: object
       required:
@@ -1075,7 +1077,7 @@ components:
           type: string
           description: the percentage of the distance between the calibrated open position and closed position that Curtain has traversed
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.HubRelatedStatus:
       type: object
       required:
@@ -1094,7 +1096,7 @@ components:
           type: string
           description: the current firmware version, e.g. V3.1
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.HumidifierStatus:
       type: object
       required:
@@ -1127,7 +1129,7 @@ components:
           type: string
           description: the current firmware version, e.g. V2.9
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.LockStatus:
       type: object
       required:
@@ -1156,7 +1158,7 @@ components:
           type: string
           description: the current firmware version, e.g. V1.7
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.MeterPlusStatus:
       type: object
       required:
@@ -1231,7 +1233,7 @@ components:
           type: string
           description: the current firmware version, e.g. V2.5
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.MotionSensorStatus:
       type: object
       required:
@@ -1265,7 +1267,7 @@ components:
           type: string
           description: the current firmware version, e.g. V1.8
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.PlugStatus:
       type: object
       required:
@@ -1288,7 +1290,7 @@ components:
           type: string
           description: the current firmware version, e.g. V2.2
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.RemoteStatus:
       type: object
       required:
@@ -1304,7 +1306,7 @@ components:
           type: string
           description: the current firmware version, e.g. V3.0
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.ThermostatStatus:
       type: object
       required:
@@ -1339,7 +1341,7 @@ components:
           type: string
           description: the current firmware version, e.g. V4.5
       allOf:
-        - $ref: "#/components/schemas/DeviceStatus.BaseDeviceStatus"
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     SharedErrors.BadRequestResponse:
       type: object
       allOf:
