@@ -25,7 +25,10 @@
     "tsup",
     "typecheck",
     "typespec",
-    "Uncapitalize"
+    "Uncapitalize",
+    "passcodes",
+    "Humi",
+    "Keypand"
   ],
   "ignorePaths": [
     "pnpm-lock.yaml",

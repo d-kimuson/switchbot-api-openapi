@@ -21,29 +21,21 @@ model ErrorResponseBody<C extends numeric, M extends string> {
 model SystemErrorResponseBody extends ErrorResponseBody<190, "System error"> {}
 
 namespace SharedResponse {
-  alias GetResponse<T, OtherErrors = never> =
-    | {
-        @statusCode _: 200;
-        @body body: SuccessResponseBody<T> | SystemErrorResponseBody;
-      }
-    | {
-        // どのステータスコードで来るか不明
-        @statusCode _: 200;
+  alias GetResponse<T, OtherErrors = never> = {
+    @statusCode status: 200;
+    @body body: SuccessResponseBody<T>;
+  } | {
+    // どのステータスコードで来るか不明
+    @statusCode status: 200;
 
-        @body body: SystemErrorResponseBody;
-      }
-    | SharedErrors.SharedErrorResponses
-    | OtherErrors;
+    @body body: SystemErrorResponseBody | OtherErrors;
+  } | SharedErrors.SharedErrorResponses;
 
-  alias PostResponse<T, OtherErrors = never> =
-    | {
-        @statusCode _: 201;
-        @body body: SuccessResponseBody<T>;
-      }
-    | {
-        @statusCode _: 190;
-        @body body: SystemErrorResponseBody;
-      }
-    | SharedErrors.SharedErrorResponses
-    | OtherErrors;
+  alias PostResponse<T, OtherErrors = never> = {
+    @statusCode status: 201;
+    @body body: SuccessResponseBody<T>;
+  } | {
+    @statusCode status: 201; // ステータスコードが不明
+    @body body: SystemErrorResponseBody | OtherErrors;
+  } | SharedErrors.SharedErrorResponses;
 }
