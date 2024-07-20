@@ -7,6 +7,8 @@ externalDocs:
   url: https://github.com/OpenWonderLabs/SwitchBotAPI/blob/main/README.md
 tags:
   - name: Devices
+  - name: Scenes
+  - name: Webhook
 paths:
   /devices:
     get:
@@ -14,6 +16,7 @@ paths:
         - Devices
       operationId: DevicesRoute_list
       summary: Get Device List
+      description: The devices API is used to access the properties and states of SwitchBot devices and to send control commands to those devices.
       parameters: []
       responses:
         '200':
@@ -22,67 +25,23 @@ paths:
             application/json:
               schema:
                 anyOf:
-                  - anyOf:
-                      - type: object
-                        required:
-                          - statusCode
-                          - message
-                          - body
-                        properties:
-                          statusCode:
-                            type: number
-                            enum:
-                              - 100
-                          message:
-                            type: string
-                            enum:
-                              - success
-                          body:
-                            type: object
-                            properties:
-                              deviceList:
-                                type: array
-                                items:
-                                  anyOf:
-                                    - $ref: '#/components/schemas/Device.Bot'
-                                    - $ref: '#/components/schemas/Device.Curtain'
-                                    - $ref: '#/components/schemas/Device.Curtain3'
-                                    - $ref: '#/components/schemas/Device.HubRelated'
-                                    - $ref: '#/components/schemas/Device.Meter'
-                                    - $ref: '#/components/schemas/Device.MeterPlus'
-                                    - $ref: '#/components/schemas/Device.MotionSensor'
-                                    - $ref: '#/components/schemas/Device.ContactSensor'
-                                    - $ref: '#/components/schemas/Device.Lock'
-                                    - $ref: '#/components/schemas/Device.Plug'
-                                    - $ref: '#/components/schemas/Device.Remote'
-                                    - $ref: '#/components/schemas/Device.Thermostat'
-                                    - $ref: '#/components/schemas/Device.Camera'
-                                    - $ref: '#/components/schemas/Device.Humidifier'
-                                description: a list of physical devices
-                              infraredRemoteList:
-                                type: array
-                                items:
-                                  anyOf:
-                                    - $ref: '#/components/schemas/Device.Bot'
-                                    - $ref: '#/components/schemas/Device.Curtain'
-                                    - $ref: '#/components/schemas/Device.Curtain3'
-                                    - $ref: '#/components/schemas/Device.HubRelated'
-                                    - $ref: '#/components/schemas/Device.Meter'
-                                    - $ref: '#/components/schemas/Device.MeterPlus'
-                                    - $ref: '#/components/schemas/Device.MotionSensor'
-                                    - $ref: '#/components/schemas/Device.ContactSensor'
-                                    - $ref: '#/components/schemas/Device.Lock'
-                                    - $ref: '#/components/schemas/Device.Plug'
-                                    - $ref: '#/components/schemas/Device.Remote'
-                                    - $ref: '#/components/schemas/Device.Thermostat'
-                                    - $ref: '#/components/schemas/Device.Camera'
-                                    - $ref: '#/components/schemas/Device.Humidifier'
-                                description: a list of virtual infrared remote devices
-                            required:
-                              - deviceList
-                              - infraredRemoteList
-                        description: Returns an object that contains two device lists
-                      - $ref: '#/components/schemas/SystemErrorResponseBody'
+                  - type: object
+                    required:
+                      - statusCode
+                      - message
+                      - body
+                    properties:
+                      statusCode:
+                        type: number
+                        enum:
+                          - 100
+                      message:
+                        type: string
+                        enum:
+                          - success
+                      body:
+                        $ref: '#/components/schemas/Device.DeviceListResponse'
+                    description: Returns an object that contains two device lists
                   - $ref: '#/components/schemas/SystemErrorResponseBody'
         '400':
           description: The client has issued an invalid request. This is commonly used to specify validation errors in a request payload.
@@ -207,6 +166,7 @@ paths:
         - Devices
       operationId: DevicesRoute_control
       summary: Send Device Control Command
+      description: Send control commands to physical devices and virtual infrared remote devices.
       parameters:
         - name: deviceId
           in: path
@@ -214,50 +174,41 @@ paths:
           schema:
             type: string
       responses:
-        '190':
-          description: Informational
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SystemErrorResponseBody'
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                anyOf:
-                  - $ref: '#/components/schemas/DeviceControl.DeviceTypeErrorResponseBody'
-                  - $ref: '#/components/schemas/DeviceControl.DeviceNotFoundErrorResponseBody'
-                  - $ref: '#/components/schemas/DeviceControl.CommandNotSupportedErrorResponseBody'
-                  - $ref: '#/components/schemas/DeviceControl.DeviceOfflineErrorResponseBody'
-                  - $ref: '#/components/schemas/DeviceControl.HubDeviceOfflineErrorResponseBody'
         '201':
           description: The request has succeeded and a new resource has been created as a result.
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - statusCode
-                  - message
-                  - body
-                properties:
-                  statusCode:
-                    type: number
-                    enum:
-                      - 100
-                  message:
-                    type: string
-                    enum:
-                      - success
-                  body:
-                    type: object
-                    properties:
-                      commandId:
-                        type: string
+                anyOf:
+                  - type: object
                     required:
-                      - commandId
-                description: Returns an object that contains two device lists
+                      - statusCode
+                      - message
+                      - body
+                    properties:
+                      statusCode:
+                        type: number
+                        enum:
+                          - 100
+                      message:
+                        type: string
+                        enum:
+                          - success
+                      body:
+                        type: object
+                        properties:
+                          commandId:
+                            type: string
+                        required:
+                          - commandId
+                    description: Returns an object that contains two device lists
+                  - anyOf:
+                      - $ref: '#/components/schemas/SystemErrorResponseBody'
+                      - $ref: '#/components/schemas/DeviceControl.DeviceTypeErrorResponseBody'
+                      - $ref: '#/components/schemas/DeviceControl.DeviceNotFoundErrorResponseBody'
+                      - $ref: '#/components/schemas/DeviceControl.CommandNotSupportedErrorResponseBody'
+                      - $ref: '#/components/schemas/DeviceControl.DeviceOfflineErrorResponseBody'
+                      - $ref: '#/components/schemas/DeviceControl.HubDeviceOfflineErrorResponseBody'
         '400':
           description: The client has issued an invalid request. This is commonly used to specify validation errors in a request payload.
           content:
@@ -382,82 +333,61 @@ paths:
             schema:
               anyOf:
                 - $ref: '#/components/schemas/DeviceControl.BotCommand'
-                - type: object
-                  properties:
-                    commandType:
-                      type: string
-                      enum:
-                        - command
-                    command:
-                      type: string
-                      enum:
-                        - setPosition
-                    parameter:
-                      type: string
-                      description: 'mode: 0 (Performance Mode), 1 (Silent Mode), ff (default mode) position: 0~100 (0 means open, 100 means closed)'
-                  required:
-                    - commandType
-                    - command
-                    - parameter
-                - type: object
-                  properties:
-                    commandType:
-                      type: string
-                      enum:
-                        - command
-                    command:
-                      type: string
-                      enum:
-                        - turnOff
-                        - turnOn
-                        - pause
-                  required:
-                    - commandType
-                    - command
-                - $ref: '#/components/schemas/DeviceControl.HubRelatedCommand'
-                - $ref: '#/components/schemas/DeviceControl.MeterCommand'
-                - $ref: '#/components/schemas/DeviceControl.MeterPlusCommand'
-                - $ref: '#/components/schemas/DeviceControl.MotionSensorCommand'
-                - $ref: '#/components/schemas/DeviceControl.ContactSensorCommand'
+                - $ref: '#/components/schemas/DeviceControl.CurtainSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.CurtailSetPositionCommand'
                 - $ref: '#/components/schemas/DeviceControl.LockCommand'
+                - $ref: '#/components/schemas/DeviceControl.LockProCommand'
+                - $ref: '#/components/schemas/DeviceControl.HumidifierSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.HumidifierSetModeCommand'
                 - $ref: '#/components/schemas/DeviceControl.PlugCommand'
-                - $ref: '#/components/schemas/DeviceControl.RemoteCommand'
-                - type: object
-                  properties:
-                    commandType:
-                      type: string
-                      enum:
-                        - command
-                    command:
-                      type: string
-                      enum:
-                        - setTemperature
-                    parameter:
-                      type: string
-                      description: Temperature value to set
-                  required:
-                    - commandType
-                    - command
-                    - parameter
-                - type: object
-                  properties:
-                    commandType:
-                      type: string
-                      enum:
-                        - command
-                    command:
-                      type: string
-                      enum:
-                        - setMode
-                    parameter:
-                      type: string
-                      description: 'Mode: heat, cool, auto, off'
-                  required:
-                    - commandType
-                    - command
-                    - parameter
-                - $ref: '#/components/schemas/DeviceControl.CameraCommand'
-                - $ref: '#/components/schemas/DeviceControl.HumidifierCommand'
+                - $ref: '#/components/schemas/DeviceControl.PlugMiniUsCommand'
+                - $ref: '#/components/schemas/DeviceControl.PlugMiniJpCommand'
+                - $ref: '#/components/schemas/DeviceControl.ColorSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.ColorBulbSetBrightnessCommand'
+                - $ref: '#/components/schemas/DeviceControl.ColorBulbSetColorCommand'
+                - $ref: '#/components/schemas/DeviceControl.ColorBulbSetColorTemperatureCommand'
+                - $ref: '#/components/schemas/DeviceControl.StripLightSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.StripLightSetBrightnessCommand'
+                - $ref: '#/components/schemas/DeviceControl.StripLightSetColorCommand'
+                - $ref: '#/components/schemas/DeviceControl.RobotVacuumCleanerS1SimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.RobotVacuumCleanerS1PowLevelCommand'
+                - $ref: '#/components/schemas/DeviceControl.RobotVacuumCleanerS1SimplePlusCommand'
+                - $ref: '#/components/schemas/DeviceControl.RobotVacuumCleanerS1PlusPowLevelCommand'
+                - $ref: '#/components/schemas/DeviceControl.FloorCleaningRobotS10SimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.FloorCleaningRobotS10StartCleanCommand'
+                - $ref: '#/components/schemas/DeviceControl.FloorCleaningRobotS10SetVolumeCommand'
+                - $ref: '#/components/schemas/DeviceControl.FloorCleaningRobotS10SelfCleanCommand'
+                - $ref: '#/components/schemas/DeviceControl.FloorCleaningRobotS10ChangeParamCommand'
+                - $ref: '#/components/schemas/DeviceControl.CeilingLightSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.CeilingLightSetBrightnessCommand'
+                - $ref: '#/components/schemas/DeviceControl.CeilingLightSetColorTemperatureCommand'
+                - $ref: '#/components/schemas/DeviceControl.CeilingLightProSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.CeilingLightProSetBrightnessCommand'
+                - $ref: '#/components/schemas/DeviceControl.CeilingLightProSetColorTemperatureCommand'
+                - $ref: '#/components/schemas/DeviceControl.KeypadCreateKeyCommand'
+                - $ref: '#/components/schemas/DeviceControl.KeypadDeleteKeyCommand'
+                - $ref: '#/components/schemas/DeviceControl.KeypadTouchCreateKeyCommand'
+                - $ref: '#/components/schemas/DeviceControl.KeypadTouchDeleteKeyCommand'
+                - $ref: '#/components/schemas/DeviceControl.BlindTiltSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.BlindTiltSetPositionCommand'
+                - $ref: '#/components/schemas/DeviceControl.BatteryCirculatorFanSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.BatteryCirculatorFanSetNightLightModeCommand'
+                - $ref: '#/components/schemas/DeviceControl.BatteryCirculatorFanSetWindModeCommand'
+                - $ref: '#/components/schemas/DeviceControl.BatteryCirculatorFanSetWindSpeedCommand'
+                - $ref: '#/components/schemas/DeviceControl.HomeApplianceSharedCommand'
+                - $ref: '#/components/schemas/DeviceControl.AirConditionerSetAllCommand'
+                - $ref: '#/components/schemas/DeviceControl.HomeApplianceSharedCommand'
+                - $ref: '#/components/schemas/DeviceControl.TvLikeDeviceSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.TvLikeDeviceSetChannelCommand'
+                - $ref: '#/components/schemas/DeviceControl.HomeApplianceSharedCommand'
+                - $ref: '#/components/schemas/DeviceControl.DvdSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.HomeApplianceSharedCommand'
+                - $ref: '#/components/schemas/DeviceControl.SpeakerSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.HomeApplianceSharedCommand'
+                - $ref: '#/components/schemas/DeviceControl.FanSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.HomeApplianceSharedCommand'
+                - $ref: '#/components/schemas/DeviceControl.LightSimpleCommand'
+                - $ref: '#/components/schemas/DeviceControl.OthersCommand'
   /devices/{id}/status:
     get:
       tags:
@@ -478,39 +408,47 @@ paths:
             application/json:
               schema:
                 anyOf:
-                  - anyOf:
-                      - type: object
-                        required:
-                          - statusCode
-                          - message
-                          - body
-                        properties:
-                          statusCode:
-                            type: number
-                            enum:
-                              - 100
-                          message:
-                            type: string
-                            enum:
-                              - success
-                          body:
-                            anyOf:
-                              - $ref: '#/components/schemas/DeviceStatus.BotStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.CurtainStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.CurtainStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.HubRelatedStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.MeterStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.MeterPlusStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.MotionSensorStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.ContactSensorStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.LockStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.PlugStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.RemoteStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.ThermostatStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.CameraStatus'
-                              - $ref: '#/components/schemas/DeviceStatus.HumidifierStatus'
-                        description: Returns an object that contains two device lists
-                      - $ref: '#/components/schemas/SystemErrorResponseBody'
+                  - type: object
+                    required:
+                      - statusCode
+                      - message
+                      - body
+                    properties:
+                      statusCode:
+                        type: number
+                        enum:
+                          - 100
+                      message:
+                        type: string
+                        enum:
+                          - success
+                      body:
+                        anyOf:
+                          - $ref: '#/components/schemas/DeviceStatus.BotStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.PlugStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.CurtainStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.MeterStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.MotionSensorStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.ContactSensorStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.ColorBulbStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.HumidifierStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.StripLightStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.LockStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.PlugMiniUsStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.PlugMiniJpStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.RobotVacuumCleanerS1Status'
+                          - $ref: '#/components/schemas/DeviceStatus.RobotVacuumCleanerS1PlusStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.KeypadStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.KeypadTouchStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.CeilingLightStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.CeilingLightProStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.Hub2Status'
+                          - $ref: '#/components/schemas/DeviceStatus.OutdoorMeterStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.BatteryCirculatorFanStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.LockProStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.FloorCleaningRobotS10Status'
+                          - $ref: '#/components/schemas/DeviceStatus.WaterLeakDetectorStatus'
+                    description: Returns an object that contains two device lists
                   - $ref: '#/components/schemas/SystemErrorResponseBody'
         '400':
           description: The client has issued an invalid request. This is commonly used to specify validation errors in a request payload.
@@ -629,40 +567,874 @@ paths:
                       - Internal Server Error
                 required:
                   - message
+  /scenes:
+    get:
+      tags:
+        - Scenes
+      operationId: SceneRoute_list
+      summary: Get scene list
+      description: Get a list of manual scenes created by the current user.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - type: object
+                    required:
+                      - statusCode
+                      - message
+                      - body
+                    properties:
+                      statusCode:
+                        type: number
+                        enum:
+                          - 100
+                      message:
+                        type: string
+                        enum:
+                          - success
+                      body:
+                        $ref: '#/components/schemas/Scene.SceneListResponse'
+                    description: Returns an object that contains two device lists
+                  - $ref: '#/components/schemas/SystemErrorResponseBody'
+        '400':
+          description: The client has issued an invalid request. This is commonly used to specify validation errors in a request payload.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Bad Request
+                required:
+                  - message
+        '401':
+          description: Http 401 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unauthorized
+                required:
+                  - message
+        '403':
+          description: Http 403 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Forbidden
+                required:
+                  - message
+        '404':
+          description: Http 404 Error. The requested resource is not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Found
+                required:
+                  - message
+        '406':
+          description: Http 406 Error. The client has requested a MIME type via the Accept header for a value not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Acceptable
+                required:
+                  - message
+        '415':
+          description: Http 415 Error. The client has defined a contentType header that is not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unsupported Media Type
+                required:
+                  - message
+        '422':
+          description: Http 422 Error. The client has made a valid request, but the server cannot process it. This is often used for APIs for which certain limits have been exceeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unprocessable Entity
+                required:
+                  - message
+        '429':
+          description: Http 429 Error. The client has exceeded the number of requests allowed for a given time window.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Too Many Requests
+                required:
+                  - message
+        '500':
+          description: Http 500 Error. An unexpected error on the SmartThings servers has occurred. These errors should be rare.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Internal Server Error
+                required:
+                  - message
+  /webhook/deleteWebhook:
+    post:
+      tags:
+        - Webhook
+      operationId: WebhookRoute_deleteWebhook
+      summary: Delete webhook
+      description: Delete the configuration of the webhook
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - type: object
+                    required:
+                      - statusCode
+                      - message
+                      - body
+                    properties:
+                      statusCode:
+                        type: number
+                        enum:
+                          - 100
+                      message:
+                        type: string
+                        enum:
+                          - success
+                      body:
+                        type: object
+                    description: Returns an object that contains two device lists
+                  - $ref: '#/components/schemas/SystemErrorResponseBody'
+        '400':
+          description: The client has issued an invalid request. This is commonly used to specify validation errors in a request payload.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Bad Request
+                required:
+                  - message
+        '401':
+          description: Http 401 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unauthorized
+                required:
+                  - message
+        '403':
+          description: Http 403 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Forbidden
+                required:
+                  - message
+        '404':
+          description: Http 404 Error. The requested resource is not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Found
+                required:
+                  - message
+        '406':
+          description: Http 406 Error. The client has requested a MIME type via the Accept header for a value not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Acceptable
+                required:
+                  - message
+        '415':
+          description: Http 415 Error. The client has defined a contentType header that is not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unsupported Media Type
+                required:
+                  - message
+        '422':
+          description: Http 422 Error. The client has made a valid request, but the server cannot process it. This is often used for APIs for which certain limits have been exceeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unprocessable Entity
+                required:
+                  - message
+        '429':
+          description: Http 429 Error. The client has exceeded the number of requests allowed for a given time window.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Too Many Requests
+                required:
+                  - message
+        '500':
+          description: Http 500 Error. An unexpected error on the SmartThings servers has occurred. These errors should be rare.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Internal Server Error
+                required:
+                  - message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - deleteWebhook
+                  description: the type of actions
+                url:
+                  type: string
+                  description: the url where all the events are sent to
+              required:
+                - action
+                - url
+  /webhook/queryWebhook:
+    post:
+      tags:
+        - Webhook
+      operationId: WebhookRoute_queryWebhook
+      summary: Get webhook configuration
+      description: Get the current configuration info of the webhook
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - type: object
+                    required:
+                      - statusCode
+                      - message
+                      - body
+                    properties:
+                      statusCode:
+                        type: number
+                        enum:
+                          - 100
+                      message:
+                        type: string
+                        enum:
+                          - success
+                      body:
+                        anyOf:
+                          - type: object
+                            properties:
+                              urls:
+                                type: array
+                                items:
+                                  type: string
+                            required:
+                              - urls
+                          - type: array
+                            items:
+                              type: object
+                              properties:
+                                url:
+                                  type: string
+                                createTime:
+                                  type: number
+                                lastUpdateTime:
+                                  type: number
+                                deviceList:
+                                  type: string
+                                  enum:
+                                    - ALL
+                                enable:
+                                  type: boolean
+                                  enum:
+                                    - true
+                              required:
+                                - url
+                                - createTime
+                                - lastUpdateTime
+                                - deviceList
+                                - enable
+                    description: Returns an object that contains two device lists
+                  - $ref: '#/components/schemas/SystemErrorResponseBody'
+        '400':
+          description: The client has issued an invalid request. This is commonly used to specify validation errors in a request payload.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Bad Request
+                required:
+                  - message
+        '401':
+          description: Http 401 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unauthorized
+                required:
+                  - message
+        '403':
+          description: Http 403 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Forbidden
+                required:
+                  - message
+        '404':
+          description: Http 404 Error. The requested resource is not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Found
+                required:
+                  - message
+        '406':
+          description: Http 406 Error. The client has requested a MIME type via the Accept header for a value not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Acceptable
+                required:
+                  - message
+        '415':
+          description: Http 415 Error. The client has defined a contentType header that is not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unsupported Media Type
+                required:
+                  - message
+        '422':
+          description: Http 422 Error. The client has made a valid request, but the server cannot process it. This is often used for APIs for which certain limits have been exceeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unprocessable Entity
+                required:
+                  - message
+        '429':
+          description: Http 429 Error. The client has exceeded the number of requests allowed for a given time window.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Too Many Requests
+                required:
+                  - message
+        '500':
+          description: Http 500 Error. An unexpected error on the SmartThings servers has occurred. These errors should be rare.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Internal Server Error
+                required:
+                  - message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - type: object
+                  properties:
+                    action:
+                      type: string
+                      enum:
+                        - queryUrl
+                      description: the type of actions, currently supports 'queryUrl', 'queryDetails'
+                  required:
+                    - action
+                - type: object
+                  properties:
+                    action:
+                      type: string
+                      enum:
+                        - queryDetails
+                      description: the type of actions, currently supports 'queryUrl', 'queryDetails'
+                    urls:
+                      type: array
+                      items:
+                        type: string
+                      description: the url where all the events are sent to. you need to specify the url when using queryDetails
+                  required:
+                    - action
+                    - urls
+  /webhook/setupWebhook:
+    post:
+      tags:
+        - Webhook
+      operationId: WebhookRoute_setupWebhook
+      summary: Configure webhook
+      description: Configure the url that all the webhook events will be sent to
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - type: object
+                    required:
+                      - statusCode
+                      - message
+                      - body
+                    properties:
+                      statusCode:
+                        type: number
+                        enum:
+                          - 100
+                      message:
+                        type: string
+                        enum:
+                          - success
+                      body:
+                        $ref: '#/components/schemas/WebhookSetupConfigure.WebhookSetupConfigureResponse'
+                    description: Returns an object that contains two device lists
+                  - $ref: '#/components/schemas/SystemErrorResponseBody'
+        '400':
+          description: The client has issued an invalid request. This is commonly used to specify validation errors in a request payload.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Bad Request
+                required:
+                  - message
+        '401':
+          description: Http 401 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unauthorized
+                required:
+                  - message
+        '403':
+          description: Http 403 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Forbidden
+                required:
+                  - message
+        '404':
+          description: Http 404 Error. The requested resource is not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Found
+                required:
+                  - message
+        '406':
+          description: Http 406 Error. The client has requested a MIME type via the Accept header for a value not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Acceptable
+                required:
+                  - message
+        '415':
+          description: Http 415 Error. The client has defined a contentType header that is not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unsupported Media Type
+                required:
+                  - message
+        '422':
+          description: Http 422 Error. The client has made a valid request, but the server cannot process it. This is often used for APIs for which certain limits have been exceeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unprocessable Entity
+                required:
+                  - message
+        '429':
+          description: Http 429 Error. The client has exceeded the number of requests allowed for a given time window.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Too Many Requests
+                required:
+                  - message
+        '500':
+          description: Http 500 Error. An unexpected error on the SmartThings servers has occurred. These errors should be rare.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Internal Server Error
+                required:
+                  - message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookSetupConfigure.WebhookSetupConfigureRequest'
+  /webhook/updateWebhook:
+    post:
+      tags:
+        - Webhook
+      operationId: WebhookRoute_updateWebhook
+      summary: Update webhook configuration
+      description: Update the configuration of the webhook
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - type: object
+                    required:
+                      - statusCode
+                      - message
+                      - body
+                    properties:
+                      statusCode:
+                        type: number
+                        enum:
+                          - 100
+                      message:
+                        type: string
+                        enum:
+                          - success
+                      body:
+                        type: object
+                    description: Returns an object that contains two device lists
+                  - $ref: '#/components/schemas/SystemErrorResponseBody'
+        '400':
+          description: The client has issued an invalid request. This is commonly used to specify validation errors in a request payload.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Bad Request
+                required:
+                  - message
+        '401':
+          description: Http 401 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unauthorized
+                required:
+                  - message
+        '403':
+          description: Http 403 Error. User permission is denied due to invalid token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Forbidden
+                required:
+                  - message
+        '404':
+          description: Http 404 Error. The requested resource is not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Found
+                required:
+                  - message
+        '406':
+          description: Http 406 Error. The client has requested a MIME type via the Accept header for a value not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Not Acceptable
+                required:
+                  - message
+        '415':
+          description: Http 415 Error. The client has defined a contentType header that is not supported by the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unsupported Media Type
+                required:
+                  - message
+        '422':
+          description: Http 422 Error. The client has made a valid request, but the server cannot process it. This is often used for APIs for which certain limits have been exceeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Unprocessable Entity
+                required:
+                  - message
+        '429':
+          description: Http 429 Error. The client has exceeded the number of requests allowed for a given time window.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Too Many Requests
+                required:
+                  - message
+        '500':
+          description: Http 500 Error. An unexpected error on the SmartThings servers has occurred. These errors should be rare.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Internal Server Error
+                required:
+                  - message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - updateWebhook
+                  description: the type of actions
+                config:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                    enable:
+                      type: boolean
+                  required:
+                    - url
+                    - enable
+                  description: the configuration details you want to update. you can change the current url or enable/disable the webhook. refer to the example below
+              required:
+                - action
+                - config
 security:
   - ApiKeyAuth: []
     ApiKeyAuth_: []
     ApiKeyAuth__: []
 components:
   schemas:
-    Device.BaseCurtain:
-      type: object
-      required:
-        - curtainDevicesIds
-        - calibrate
-        - group
-        - master
-        - openDirection
-      properties:
-        curtainDevicesIds:
-          type: array
-          items:
-            type: string
-          description: Array a list of Curtain device IDs such that the Curtain devices are being paired or grouped
-        calibrate:
-          type: boolean
-          description: determines if the open position and the close position of a device have been properly calibrated or not
-        group:
-          type: boolean
-          description: determines if a Curtain is paired with or grouped with another Curtain or not
-        master:
-          type: boolean
-          description: determines if a Curtain is the master device or not when paired with or grouped with another Curtain
-        openDirection:
-          type: string
-          description: the opening direction of a Curtain
-      allOf:
-        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.BaseDevice:
       type: object
       required:
@@ -689,22 +1461,73 @@ components:
       discriminator:
         propertyName: deviceType
         mapping:
+          Hub Plus: '#/components/schemas/Device.HubPlus'
+          Hub Mini: '#/components/schemas/Device.HubMini'
+          Bot: '#/components/schemas/Device.Bot'
           Curtain: '#/components/schemas/Device.Curtain'
-          Curtain3: '#/components/schemas/Device.Curtain3'
-          Hub: '#/components/schemas/Device.HubRelated'
-          Hub Plus: '#/components/schemas/Device.HubRelated'
-          Hub Mini: '#/components/schemas/Device.HubRelated'
-          Hub 2: '#/components/schemas/Device.HubRelated'
-          Meter: '#/components/schemas/Device.Meter'
-          MeterPlus: '#/components/schemas/Device.MeterPlus'
-          MotionSensor: '#/components/schemas/Device.MotionSensor'
-          ContactSensor: '#/components/schemas/Device.ContactSensor'
-          Lock: '#/components/schemas/Device.Lock'
           Plug: '#/components/schemas/Device.Plug'
+          Meter: '#/components/schemas/Device.Meter'
+          Motion Sensor: '#/components/schemas/Device.MotionSensor'
+          Contact Sensor: '#/components/schemas/Device.ContactSensor'
+          Plug Mini (US): '#/components/schemas/Device.PlugMiniUs'
+          Plug Mini (JP): '#/components/schemas/Device.PlugMiniJp'
+          Smart Lock: '#/components/schemas/Device.Lock'
+          MeterPlus: '#/components/schemas/Device.MeterPlus'
+          Keypad Touch: '#/components/schemas/Device.KeypadTouch'
+          Ceiling Light: '#/components/schemas/Device.CeilingLight'
+          Ceiling Light Pro: '#/components/schemas/Device.CeilingLightPro'
+          Hub 2: '#/components/schemas/Device.Hub2'
+          WoIOSensor: '#/components/schemas/Device.OutdoorMeter'
+          Curtain3: '#/components/schemas/Device.Curtain3'
+          Smart Lock Pro: '#/components/schemas/Device.LockPro'
+          Water Detector: '#/components/schemas/Device.WaterLeakDetector'
           Remote: '#/components/schemas/Device.Remote'
-          Thermostat: '#/components/schemas/Device.Thermostat'
-          Camera: '#/components/schemas/Device.Camera'
-          Humidifier: '#/components/schemas/Device.Humidifier'
+    Device.BatteryCirculatorFan:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Battery Circulator Fan
+          description: device type
+    Device.BlindTilt:
+      type: object
+      required:
+        - deviceType
+        - blindTiltDevicesIds
+        - calibrate
+        - group
+        - master
+        - direction
+        - slidePosition
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Blind Tilt
+          description: device type
+        blindTiltDevicesIds:
+          type: array
+          items:
+            type: string
+          description: a list of Blind Tilt device IDs such that the Blind Tilt devices are being paired or grouped
+        calibrate:
+          type: boolean
+          description: determines if the open and the closed positions have been properly calibrated or not
+        group:
+          type: boolean
+          description: determines if a Blind Tilt device is paired with or grouped with one or more devices of the same type or not
+        master:
+          type: boolean
+          description: determines if a Blind Tilt device is the master device or not when paired with or grouped with one or more devices of the same type
+        direction:
+          type: string
+          description: the opening direction of a Blind Tilt device
+        slidePosition:
+          type: number
+          description: the current position, 0-100
     Device.Bot:
       type: object
       required:
@@ -717,66 +1540,167 @@ components:
           description: device type
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
-    Device.Camera:
+    Device.CeilingLight:
       type: object
       required:
         - deviceType
-        - status
-        - fieldOfView
       properties:
         deviceType:
           type: string
           enum:
-            - Camera
+            - Ceiling Light
           description: device type
-        status:
-          type: string
-          enum:
-            - Online
-            - Offline
-          description: current status of the camera
-        fieldOfView:
-          type: number
-          description: field of view of the camera in degrees
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.CeilingLightPro:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Ceiling Light Pro
+          description: device type
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.ColorBulb:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Color Bulb
+          description: device type
     Device.ContactSensor:
       type: object
       required:
         - deviceType
-        - open
-        - moveDetected
-        - luminance
       properties:
         deviceType:
           type: string
           enum:
-            - ContactSensor
+            - Contact Sensor
           description: device type
-        open:
-          type: boolean
-          description: detected open status
-        moveDetected:
-          type: boolean
-          description: detected move status
-        luminance:
-          type: number
-          description: luminance value of the environment where the device is located
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Curtain:
       type: object
       required:
         - deviceType
+        - curtainDevicesIds
+        - calibrate
+        - group
+        - master
+        - openDirection
       properties:
         deviceType:
           type: string
           enum:
             - Curtain
           description: device type
+        curtainDevicesIds:
+          type: array
+          items:
+            type: string
+          description: a list of Curtain device IDs such that the Curtain devices are being paired or grouped
+        calibrate:
+          type: boolean
+          description: determines if the open position and the close position of a device have been properly calibrated or not
+        group:
+          type: boolean
+          description: determines if a Curtain is paired with or grouped with another Curtain or not
+        master:
+          type: boolean
+          description: determines if a Curtain is the master device or not when paired with or grouped with another Curtain
+        openDirection:
+          type: string
+          description: the opening direction of a Curtain
       allOf:
-        - $ref: '#/components/schemas/Device.BaseCurtain'
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Curtain3:
+      type: object
+      required:
+        - deviceType
+        - curtainDevicesIds
+        - calibrate
+        - group
+        - master
+        - openDirection
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Curtain3
+          description: device type
+        curtainDevicesIds:
+          type: array
+          items:
+            type: string
+          description: a list of Curtain device IDs such that the Curtain devices are being paired or grouped
+        calibrate:
+          type: boolean
+          description: determines if the open position and the close position of a device have been properly calibrated or not
+        group:
+          type: boolean
+          description: determines if a Curtain is paired with or grouped with another Curtain or not
+        master:
+          type: boolean
+          description: determines if a Curtain is the master device or not when paired with or grouped with another Curtain
+        openDirection:
+          type: string
+          description: the opening direction of a Curtain
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.DeviceListResponse:
+      type: object
+      required:
+        - devices
+        - infraredRemoteList
+      properties:
+        devices:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/Device.Hub'
+              - $ref: '#/components/schemas/Device.HubPlus'
+              - $ref: '#/components/schemas/Device.HubMini'
+              - $ref: '#/components/schemas/Device.Bot'
+              - $ref: '#/components/schemas/Device.Curtain'
+              - $ref: '#/components/schemas/Device.Plug'
+              - $ref: '#/components/schemas/Device.Meter'
+              - $ref: '#/components/schemas/Device.MotionSensor'
+              - $ref: '#/components/schemas/Device.ContactSensor'
+              - $ref: '#/components/schemas/Device.ColorBulb'
+              - $ref: '#/components/schemas/Device.Humidifier'
+              - $ref: '#/components/schemas/Device.StripLight'
+              - $ref: '#/components/schemas/Device.PlugMiniUs'
+              - $ref: '#/components/schemas/Device.PlugMiniJp'
+              - $ref: '#/components/schemas/Device.Lock'
+              - $ref: '#/components/schemas/Device.MeterPlus'
+              - $ref: '#/components/schemas/Device.RobotVacuumCleanerS1'
+              - $ref: '#/components/schemas/Device.RobotVacuumCleanerS1Plus'
+              - $ref: '#/components/schemas/Device.Keypad'
+              - $ref: '#/components/schemas/Device.KeypadTouch'
+              - $ref: '#/components/schemas/Device.CeilingLight'
+              - $ref: '#/components/schemas/Device.CeilingLightPro'
+              - $ref: '#/components/schemas/Device.BlindTilt'
+              - $ref: '#/components/schemas/Device.Hub2'
+              - $ref: '#/components/schemas/Device.OutdoorMeter'
+              - $ref: '#/components/schemas/Device.BatteryCirculatorFan'
+              - $ref: '#/components/schemas/Device.Curtain3'
+              - $ref: '#/components/schemas/Device.LockPro'
+              - $ref: '#/components/schemas/Device.FloorCleaningRobotS10'
+              - $ref: '#/components/schemas/Device.WaterLeakDetector'
+          description: a list of physical devices
+        infraredRemoteList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Device.RemoteDevice'
+          description: a list of virtual infrared remote devices
+    Device.FloorCleaningRobotS10:
       type: object
       required:
         - deviceType
@@ -784,11 +1708,9 @@ components:
         deviceType:
           type: string
           enum:
-            - Curtain3
+            - Floor Cleaning Robot S10
           description: device type
-      allOf:
-        - $ref: '#/components/schemas/Device.BaseCurtain'
-    Device.HubRelated:
+    Device.Hub:
       type: object
       required:
         - deviceType
@@ -797,9 +1719,42 @@ components:
           type: string
           enum:
             - Hub
-            - Hub Plus
-            - Hub Mini
+          description: device type
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.Hub2:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
             - Hub 2
+          description: device type
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.HubMini:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Hub Mini
+          description: device type
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.HubPlus:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Hub Plus
           description: device type
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
@@ -807,129 +1762,236 @@ components:
       type: object
       required:
         - deviceType
-        - humidityLevel
-        - powerState
       properties:
         deviceType:
           type: string
           enum:
             - Humidifier
           description: device type
-        humidityLevel:
-          type: number
-          description: current humidity level setting
-        powerState:
+    Device.Keypad:
+      type: object
+      required:
+        - deviceType
+        - lockDeviceId
+        - keyList
+      properties:
+        deviceType:
           type: string
           enum:
-            - on
-            - off
-          description: current power state of the humidifier
+            - Keypad
+          description: device type
+        lockDeviceId:
+          type: string
+          description: MAC address of the Lock that the current device is paired with
+        keyList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Device.Passcode'
+          description: a list of passcodes
+    Device.KeypadTouch:
+      type: object
+      required:
+        - deviceType
+        - lockDeviceId
+        - keyList
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Keypad Touch
+          description: device type
+        lockDeviceId:
+          type: string
+          description: MAC address of the Lock that the current device is paired with
+        keyList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Device.Passcode'
+          description: a list of passcodes
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Lock:
       type: object
       required:
         - deviceType
-        - lockState
+        - group
+        - master
+        - groupName
+        - lockDevicesIds
       properties:
         deviceType:
           type: string
           enum:
-            - Lock
+            - Smart Lock
           description: device type
-        lockState:
+        group:
+          type: boolean
+          description: determines if a Lock is grouped with another Lock or not
+        master:
+          type: boolean
+          description: determines if a Lock is the master device or not when grouped with another Lock in Dual Lock mode
+        groupName:
+          type: string
+          description: the name of the Lock group
+        lockDevicesIds:
+          type: array
+          items:
+            type: string
+          description: '	a list of Lock device IDs such that the Lock devices are being grouped in Dual Lock mode'
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.LockPro:
+      type: object
+      required:
+        - deviceType
+        - group
+        - master
+        - groupName
+        - lockDevicesIds
+      properties:
+        deviceType:
           type: string
           enum:
-            - locked
-            - unlocked
-          description: determines if the device is locked
+            - Smart Lock Pro
+          description: device type
+        group:
+          type: boolean
+          description: determines if a Lock is grouped with another Lock or not
+        master:
+          type: boolean
+          description: determines if a Lock is the master device or not when grouped with another Lock in Dual Lock mode
+        groupName:
+          type: string
+          description: the name of the Lock group
+        lockDevicesIds:
+          type: array
+          items:
+            type: string
+          description: a list of Lock device IDs such that the Lock devices are being grouped in Dual Lock mode
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Meter:
       type: object
       required:
         - deviceType
-        - temperature
-        - humidity
       properties:
         deviceType:
           type: string
           enum:
             - Meter
           description: device type
-        temperature:
-          type: number
-          description: temperature value of the environment where the device is located
-        humidity:
-          type: number
-          description: humidity level in the environment where the device is located
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
     Device.MeterPlus:
       type: object
       required:
         - deviceType
-        - temperature
-        - humidity
-        - luminance
       properties:
         deviceType:
           type: string
           enum:
             - MeterPlus
           description: device type
-        temperature:
-          type: number
-          description: temperature value of the environment where the device is located
-        humidity:
-          type: number
-          description: humidity level in the environment where the device is located
-        luminance:
-          type: number
-          description: luminance value of the environment where the device is located
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
     Device.MotionSensor:
       type: object
       required:
         - deviceType
-        - motionDetected
-        - movementCount
-        - luminance
       properties:
         deviceType:
           type: string
           enum:
-            - MotionSensor
+            - Motion Sensor
           description: device type
-        motionDetected:
-          type: boolean
-          description: detected motion status
-        movementCount:
-          type: number
-          description: detected movement count
-        luminance:
-          type: number
-          description: luminance value of the environment where the device is located
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.OutdoorMeter:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - WoIOSensor
+          description: device type
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.Passcode:
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - password
+        - iv
+        - status
+        - createTime
+      properties:
+        id:
+          type: number
+          description: passcode ID
+        name:
+          type: string
+          description: name of the passcode
+        type:
+          type: string
+          enum:
+            - permanent
+            - timeLimit
+            - disposable
+            - urgent
+          description: type of the passcode
+        password:
+          type: string
+          description: the passcode string encrypted with the developer secret key using the aes-128-cbc algorithm
+        iv:
+          type: string
+          description: an arbitrary number used for the encryption
+        status:
+          type: string
+          enum:
+            - normal
+            - expired
+          description: validity of the passcode
+        createTime:
+          type: number
+          description: the time when the passcode is generated
     Device.Plug:
       type: object
       required:
         - deviceType
-        - powerState
       properties:
         deviceType:
           type: string
           enum:
             - Plug
           description: device type
-        powerState:
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.PlugMiniJp:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
           type: string
           enum:
-            - on
-            - off
-          description: determines if the plug is on or off
+            - Plug Mini (JP)
+          description: device type
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
+    Device.PlugMiniUs:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Plug Mini (US)
+          description: device type
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
     Device.Remote:
@@ -944,63 +2006,461 @@ components:
           description: device type
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
-    Device.Thermostat:
+    Device.RemoteDevice:
+      type: object
+      required:
+        - deviceId
+        - deviceName
+        - remoteType
+        - hubDeviceId
+      properties:
+        deviceId:
+          type: string
+          description: device ID
+        deviceName:
+          type: string
+          description: device name
+        remoteType:
+          type: string
+          enum:
+            - Air Conditioner
+            - TV
+            - Light
+            - Streamer
+            - Set Top Box
+            - DVD Player
+            - Fan
+            - Projector
+            - Camera
+            - Air Purifier
+            - Speaker
+            - Water Heater
+            - Robot Vacuum Cleaner
+          description: device type
+        hubDeviceId:
+          type: string
+          description: remote device's parent Hub ID
+    Device.RobotVacuumCleanerS1:
       type: object
       required:
         - deviceType
-        - temperatureSetting
-        - mode
       properties:
         deviceType:
           type: string
           enum:
-            - Thermostat
+            - Robot Vacuum Cleaner S1
           description: device type
-        temperatureSetting:
-          type: number
-          description: current temperature setting
-        mode:
+    Device.RobotVacuumCleanerS1Plus:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
           type: string
           enum:
-            - heat
-            - cool
-            - auto
-            - off
-          description: current mode of the thermostat
+            - Robot Vacuum Cleaner S1 Plus
+          description: device type
+    Device.StripLight:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Strip Light
+          description: device type
+    Device.WaterLeakDetector:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Water Detector
+          description: device type
       allOf:
         - $ref: '#/components/schemas/Device.BaseDevice'
+    DeviceControl.AirConditionerSetAllCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setAll
+        parameter:
+          type: string
+          description: '{temperature},{mode},{fan speed},{power state}. e.g. 26,1,3,on'
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.BatteryCirculatorFanSetNightLightModeCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setNightLightMode
+        parameter:
+          anyOf:
+            - type: string
+              enum:
+                - off
+            - type: number
+              enum:
+                - 1
+                - 2
+          description: off, turn off nightlight, 1, bright 2, dim
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.BatteryCirculatorFanSetWindModeCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setWindMode
+        parameter:
+          type: string
+          enum:
+            - direct
+            - natural
+            - sleep
+            - baby
+          description: 'Set fan mode. direct: direct mode. natural: natural mode. sleep: sleep mode. baby: ultra quiet mode'
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.BatteryCirculatorFanSetWindSpeedCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setWindSpeed
+        parameter:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: Set fan speed.1~100
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.BatteryCirculatorFanSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOn
+                - turnOff
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.BlindTiltSetPositionCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setPosition
+        parameter:
+          type: string
+          description: 'direction: up/down, position: 0~100 (0 means closed, 100 means open, it MUST be set to a multiple of 2. e.g. up;48 or up; 36)'
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.BlindTiltSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - fullyOpen
+                - closeUp
+                - closeDown
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
     DeviceControl.BotCommand:
       type: object
-      required:
-        - commandType
-        - command
-      properties:
-        commandType:
-          type: string
-          enum:
+      allOf:
+        - type: object
+          required:
             - command
-        command:
-          type: string
-          enum:
-            - turnOff
-            - turnOn
-            - press
-    DeviceControl.CameraCommand:
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOff
+                - turnOn
+                - press
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.CeilingLightProSetBrightnessCommand:
       type: object
       required:
-        - commandType
         - command
+        - parameter
+        - commandType
       properties:
+        command:
+          type: string
+          enum:
+            - setBrightness
+        parameter:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: set brightness
         commandType:
           type: string
           enum:
             - command
+    DeviceControl.CeilingLightProSetColorTemperatureCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
         command:
           type: string
           enum:
-            - startRecording
-            - stopRecording
-            - capturePhoto
+            - setColorTemperature
+        parameter:
+          type: number
+          minimum: 2700
+          maximum: 6500
+          description: set color temperature
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.CeilingLightProSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOn
+                - turnOff
+                - toggle
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.CeilingLightSetBrightnessCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setBrightness
+        parameter:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: set brightness
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.CeilingLightSetColorTemperatureCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setColorTemperature
+        parameter:
+          type: number
+          minimum: 2700
+          maximum: 6500
+          description: set color temperature
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.CeilingLightSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOn
+                - turnOff
+                - toggle
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.ColorBulbSetBrightnessCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setBrightness
+        parameter:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: set brightness
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.ColorBulbSetColorCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setColor
+        parameter:
+          type: string
+          description: "set RGB color value. format: '{0-255}:{0-255}:{0-255}'"
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.ColorBulbSetColorTemperatureCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setColorTemperature
+        parameter:
+          type: number
+          minimum: 2700
+          maximum: 6500
+          description: set color temperature
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.ColorSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOff
+                - turnOn
+                - toggle
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
     DeviceControl.CommandNotSupportedErrorResponseBody:
       type: object
       allOf:
@@ -1018,20 +2478,49 @@ components:
               enum:
                 - command is not supported
       description: Command is not supported
-    DeviceControl.ContactSensorCommand:
+    DeviceControl.CurtailSetPositionCommand:
       type: object
       required:
-        - commandType
         - command
+        - parameter
+        - commandType
       properties:
+        command:
+          type: string
+          enum:
+            - setPosition
+        parameter:
+          type: string
+          description: |-
+            index0,mode0,position0
+            e.g. 0,ff,80
         commandType:
           type: string
           enum:
             - command
-        command:
-          type: string
-          enum:
-            - reset
+    DeviceControl.CurtainSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOff
+                - turnOn
+                - pause
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
     DeviceControl.DeviceNotFoundErrorResponseBody:
       type: object
       allOf:
@@ -1083,6 +2572,219 @@ components:
               enum:
                 - device type error
       description: Device internal error due to device states not synchronized with server
+    DeviceControl.DvdSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - setMute
+                - FastForward
+                - Rewind
+                - Next
+                - Previous
+                - Pause
+                - Play
+                - Stop
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.FanSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - swing
+                - timer
+                - lowSpeed
+                - middleSpeed
+                - highSpeed
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.FloorCleaningRobotS10ChangeParamCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - changeParam
+        parameter:
+          $ref: '#/components/schemas/DeviceControl.FloorCleaningRobotS10CleaningParameter'
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.FloorCleaningRobotS10CleaningParameter:
+      type: object
+      required:
+        - fanLevel
+        - waterLevel
+        - times
+      properties:
+        fanLevel:
+          type: number
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          description: fanLevel, the vacuum level, 1-4
+        waterLevel:
+          type: number
+          enum:
+            - 1
+            - 2
+          description: waterLevel, the mop moisture level, 1-2.
+        times:
+          type: number
+          minimum: 1
+          maximum: 2639999
+          description: times, the number of cycles, 1-2639999, in theory.
+    DeviceControl.FloorCleaningRobotS10SelfCleanCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - selfClean
+        parameter:
+          type: number
+          enum:
+            - 1
+            - 2
+            - 3
+          description: mode 1, wash the mop.mode 2, dry itself.mode 3, terminate.
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.FloorCleaningRobotS10SetVolumeCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setVolume
+        parameter:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: set volume, 1-100
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.FloorCleaningRobotS10SimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - addWaterForHumi
+                - pause
+                - dock
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.FloorCleaningRobotS10StartCleanCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - startClean
+          description: start cleaning.
+        parameter:
+          type: object
+          properties:
+            action:
+              type: string
+              enum:
+                - sweep
+                - sweep_mop
+              description: the cleaning mode, sweep or sweep_mop.
+            param:
+              $ref: '#/components/schemas/DeviceControl.FloorCleaningRobotS10CleaningParameter'
+          required:
+            - action
+            - param
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.HomeApplianceSharedCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOn
+                - turnOff
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
     DeviceControl.HubDeviceOfflineErrorResponseBody:
       type: object
       allOf:
@@ -1100,131 +2802,540 @@ components:
               enum:
                 - hub device is offline
       description: Hub device is offline
-    DeviceControl.HubRelatedCommand:
+    DeviceControl.HumidifierSetModeCommand:
       type: object
       required:
-        - commandType
         - command
+        - parameter
+        - commandType
       properties:
+        command:
+          type: string
+          enum:
+            - setMode
+        parameter:
+          anyOf:
+            - type: string
+              enum:
+                - auto
+            - type: number
+              enum:
+                - 101
+                - 102
+                - 103
+            - type: number
+          description: auto, set to Auto Mode, 101, set atomization efficiency to 34%, 102, set atomization efficiency to 67%,103, set atomization efficiency to 100%
         commandType:
           type: string
           enum:
             - command
+    DeviceControl.HumidifierSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOn
+                - turnOff
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.KeypadCreateKeyCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
         command:
           type: string
           enum:
-            - turnOff
-            - turnOn
-            - setVolume
+            - createKey
         parameter:
-          type: string
-          description: 'Volume level: 0~100'
-    DeviceControl.HumidifierCommand:
-      type: object
-      required:
-        - commandType
-        - command
-      properties:
+          $ref: '#/components/schemas/DeviceControl.KeypandParameter'
         commandType:
           type: string
           enum:
             - command
+    DeviceControl.KeypadDeleteKeyCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
         command:
           type: string
           enum:
-            - turnOff
-            - turnOn
-            - setHumidity
+            - deleteKey
         parameter:
+          type: object
+          properties:
+            id:
+              type: number
+              description: the id of the passcode
+          required:
+            - id
+        commandType:
           type: string
-          description: 'Humidity level: 0~100'
+          enum:
+            - command
+    DeviceControl.KeypadTouchCreateKeyCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - createKey
+        parameter:
+          $ref: '#/components/schemas/DeviceControl.KeypandParameter'
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.KeypadTouchDeleteKeyCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - deleteKey
+        parameter:
+          type: object
+          properties:
+            id:
+              type: number
+              description: the id of the passcode
+          required:
+            - id
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.KeypandParameter:
+      type: object
+      required:
+        - name
+        - type
+        - password
+        - startTime
+        - endTime
+      properties:
+        name:
+          type: string
+          description: a unique name for the passcode. duplicates under the same device are not allowed.
+        type:
+          type: string
+          enum:
+            - permanent
+            - timeLimit
+            - disposable
+            - urgent
+          description: type of the passcode. permanent, a permanent passcode. timeLimit, a temporary passcode. disposable, a one-time passcode. urgent, an emergency passcode.
+        password:
+          type: string
+          description: a 6 to 12-digit passcode in plain text
+        startTime:
+          type: number
+          description: set the time the passcode becomes valid from, mandatory for one-time passcode and temporary passcode. a 10-digit timestamp.
+        endTime:
+          type: number
+          description: set the time the passcode becomes expired, mandatory for one-time passcode and temporary passcode. a 10-digit timestamp.
+    DeviceControl.LightSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - brightnessUp
+                - brightnessDown
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
     DeviceControl.LockCommand:
       type: object
-      required:
-        - commandType
-        - command
-      properties:
-        commandType:
-          type: string
-          enum:
+      allOf:
+        - type: object
+          required:
             - command
-        command:
-          type: string
-          enum:
-            - lock
-            - unlock
-    DeviceControl.MeterCommand:
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - lock
+                - unlock
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.LockProCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - lock
+                - unlock
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.OthersCommand:
       type: object
       required:
-        - commandType
         - command
+        - parameter
+        - commandType
       properties:
+        command:
+          type: string
+        parameter:
+          type: string
+          enum:
+            - default
         commandType:
           type: string
           enum:
-            - command
-        command:
-          type: string
-          enum:
-            - update
-    DeviceControl.MeterPlusCommand:
-      type: object
-      required:
-        - commandType
-        - command
-      properties:
-        commandType:
-          type: string
-          enum:
-            - command
-        command:
-          type: string
-          enum:
-            - update
-    DeviceControl.MotionSensorCommand:
-      type: object
-      required:
-        - commandType
-        - command
-      properties:
-        commandType:
-          type: string
-          enum:
-            - command
-        command:
-          type: string
-          enum:
-            - reset
+            - customize
     DeviceControl.PlugCommand:
       type: object
-      required:
-        - commandType
-        - command
-      properties:
-        commandType:
-          type: string
-          enum:
+      allOf:
+        - type: object
+          required:
             - command
-        command:
-          type: string
-          enum:
-            - turnOff
-            - turnOn
-    DeviceControl.RemoteCommand:
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOff
+                - turnOn
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.PlugMiniJpCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOff
+                - turnOn
+                - toggle
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.PlugMiniUsCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOff
+                - turnOn
+                - toggle
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.RobotVacuumCleanerS1PlusPowLevelCommand:
       type: object
       required:
-        - commandType
         - command
+        - parameter
+        - commandType
       properties:
+        command:
+          type: string
+          enum:
+            - PowLevel
+        parameter:
+          type: number
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+          description: 'set suction power level: 0 (Quiet), 1 (Standard), 2 (Strong), 3 (MAX)'
         commandType:
           type: string
           enum:
             - command
+    DeviceControl.RobotVacuumCleanerS1PowLevelCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
         command:
           type: string
           enum:
-            - turnOff
-            - turnOn
+            - PowLevel
+        parameter:
+          type: number
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+          description: 'set suction power level: 0 (Quiet), 1 (Standard), 2 (Strong), 3 (MAX)'
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.RobotVacuumCleanerS1SimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - start
+                - stop
+                - dock
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.RobotVacuumCleanerS1SimplePlusCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - start
+                - stop
+                - dock
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.SpeakerSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - setMute
+                - FastForward
+                - Rewind
+                - Next
+                - Previous
+                - Pause
+                - Play
+                - Stop
+                - volumeAdd
+                - volumeSub
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.StripLightSetBrightnessCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setBrightness
+        parameter:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: set brightness
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.StripLightSetColorCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - setColor
+        parameter:
+          type: string
+          description: "set RGB color value. format: '{0-255}:{0-255}:{0-255}'"
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.StripLightSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - turnOff
+                - turnOn
+                - toggle
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
+    DeviceControl.TvLikeDeviceSetChannelCommand:
+      type: object
+      required:
+        - command
+        - parameter
+        - commandType
+      properties:
+        command:
+          type: string
+          enum:
+            - SetChannel
+        parameter:
+          type: number
+          description: set the TV channel to switch to
+        commandType:
+          type: string
+          enum:
+            - command
+    DeviceControl.TvLikeDeviceSimpleCommand:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - command
+            - parameter
+            - commandType
+          properties:
+            command:
+              type: string
+              enum:
+                - volumeAdd
+                - volumeSub
+                - channelAdd
+                - channelSub
+            parameter:
+              type: string
+              enum:
+                - default
+            commandType:
+              type: string
+              enum:
+                - command
     DeviceStatus.BaseDeviceStatus:
       type: object
       required:
@@ -1243,20 +3354,141 @@ components:
       discriminator:
         propertyName: deviceType
         mapping:
-          Curtain: '#/components/schemas/DeviceStatus.CurtainStatus'
-          Hub: '#/components/schemas/DeviceStatus.HubRelatedStatus'
-          Hub Plus: '#/components/schemas/DeviceStatus.HubRelatedStatus'
-          Hub Mini: '#/components/schemas/DeviceStatus.HubRelatedStatus'
-          Hub 2: '#/components/schemas/DeviceStatus.HubRelatedStatus'
-          Meter: '#/components/schemas/DeviceStatus.MeterStatus'
-          MotionSensor: '#/components/schemas/DeviceStatus.MotionSensorStatus'
-          ContactSensor: '#/components/schemas/DeviceStatus.ContactSensorStatus'
-          Lock: '#/components/schemas/DeviceStatus.LockStatus'
           Plug: '#/components/schemas/DeviceStatus.PlugStatus'
-          Remote: '#/components/schemas/DeviceStatus.RemoteStatus'
-          Thermostat: '#/components/schemas/DeviceStatus.ThermostatStatus'
-          Camera: '#/components/schemas/DeviceStatus.CameraStatus'
+          Curtain: '#/components/schemas/DeviceStatus.CurtainStatus'
+          Meter: '#/components/schemas/DeviceStatus.MeterStatus'
+          Motion Sensor: '#/components/schemas/DeviceStatus.MotionSensorStatus'
+          Contact Sensor: '#/components/schemas/DeviceStatus.ContactSensorStatus'
+          Color Bulb: '#/components/schemas/DeviceStatus.ColorBulbStatus'
           Humidifier: '#/components/schemas/DeviceStatus.HumidifierStatus'
+          Strip Light: '#/components/schemas/DeviceStatus.StripLightStatus'
+          Smart Lock: '#/components/schemas/DeviceStatus.LockStatus'
+          Plug Mini (US): '#/components/schemas/DeviceStatus.PlugMiniUsStatus'
+          Plug Mini (JP): '#/components/schemas/DeviceStatus.PlugMiniJpStatus'
+          Robot Vacuum Cleaner S1: '#/components/schemas/DeviceStatus.RobotVacuumCleanerS1Status'
+          Robot Vacuum Cleaner S1 Plus: '#/components/schemas/DeviceStatus.RobotVacuumCleanerS1PlusStatus'
+          Keypad: '#/components/schemas/DeviceStatus.KeypadStatus'
+          Keypad Touch: '#/components/schemas/DeviceStatus.KeypadTouchStatus'
+          Ceiling Light: '#/components/schemas/DeviceStatus.CeilingLightStatus'
+          Ceiling Light Pro: '#/components/schemas/DeviceStatus.CeilingLightProStatus'
+          Hub 2: '#/components/schemas/DeviceStatus.Hub2Status'
+          WoIOSensor: '#/components/schemas/DeviceStatus.OutdoorMeterStatus'
+          Battery Circulator Fan: '#/components/schemas/DeviceStatus.BatteryCirculatorFanStatus'
+          Smart Lock Pro: '#/components/schemas/DeviceStatus.LockProStatus'
+          Floor Cleaning Robot S10: '#/components/schemas/DeviceStatus.FloorCleaningRobotS10Status'
+          Water Detector: '#/components/schemas/DeviceStatus.WaterLeakDetectorStatus'
+          Curtain3: '#/components/schemas/DeviceStatus.Curtain3Status'
+          MeterPlus: '#/components/schemas/DeviceStatus.MeterPlusStatus'
+          Blind Tilt: '#/components/schemas/DeviceStatus.BlindTiltStatus'
+    DeviceStatus.BatteryCirculatorFanStatus:
+      type: object
+      required:
+        - deviceType
+        - deviceName
+        - mode
+        - version
+        - battery
+        - power
+        - nightStatus
+        - oscillation
+        - verticalOscillation
+        - chargingStatus
+        - fanSpeed
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Battery Circulator Fan
+          description: device type
+        deviceName:
+          type: string
+          description: device name
+        mode:
+          type: string
+          enum:
+            - direct
+            - natural
+            - sleep
+            - baby
+          description: 'fan mode. direct mode: direct; natural mode: natural; sleep mode: sleep; ultra quiet mode: baby'
+        version:
+          type: string
+          description: the current firmware version, e.g. V4.2
+        battery:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: the current battery level, 0-100
+        power:
+          type: string
+          enum:
+            - ON
+            - OFF
+          description: ON/OFF state
+        nightStatus:
+          type: number
+          enum:
+            - 0
+            - 1
+            - 2
+          description: 'set nightlight status. turn off: off; mode 1: 1; mode 2: 2'
+        oscillation:
+          type: string
+          enum:
+            - on
+            - off
+          description: 'set horizontal oscillation. turn on: on; turn off: off'
+        verticalOscillation:
+          type: string
+          enum:
+            - on
+            - off
+          description: 'set vertical oscillation. turn on: on; turn off: off'
+        chargingStatus:
+          type: string
+          enum:
+            - charging
+            - uncharged
+          description: battery charge status. charging or uncharged
+        fanSpeed:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: fan speed. 1~100
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.BlindTiltStatus:
+      type: object
+      required:
+        - deviceType
+        - calibrate
+        - group
+        - moving
+        - direction
+        - slidePosition
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Blind Tilt
+          description: device type
+        calibrate:
+          type: boolean
+          description: determines if the open and the closed positions have been properly calibrated or not
+        group:
+          type: boolean
+          description: determines if a Blind Tilt device is paired with or grouped with one or more devices of the same type or not
+        moving:
+          type: boolean
+          description: determines if the device is moving or not
+        direction:
+          type: string
+          description: the opening direction of a Blind Tilt device
+        slidePosition:
+          type: number
+          description: the current position, 0-100
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.BotStatus:
       type: object
       required:
@@ -1294,57 +3526,130 @@ components:
           description: pressMode, switchMode, or customizeMode
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
-    DeviceStatus.CameraStatus:
+    DeviceStatus.CeilingLightProStatus:
       type: object
       required:
         - deviceType
-        - status
-        - fieldOfView
+        - power
         - version
+        - brightness
+        - colorTemperature
       properties:
         deviceType:
           type: string
           enum:
-            - Camera
+            - Ceiling Light Pro
           description: device type
-        status:
+        power:
           type: string
           enum:
-            - Online
-            - Offline
-          description: current status of the camera
-        fieldOfView:
-          type: number
-          description: field of view of the camera in degrees
+            - ON
+            - OFF
+          description: ON/OFF state
         version:
           type: string
-          description: the current firmware version, e.g. V5.1
+          description: the current firmware version, e.g. V4.2
+        brightness:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: the brightness value, range from 1 to 100
+        colorTemperature:
+          type: number
+          minimum: 2700
+          maximum: 6500
+          description: the color temperature value, range from 2700 to 6500
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.CeilingLightStatus:
+      type: object
+      required:
+        - deviceType
+        - power
+        - version
+        - brightness
+        - colorTemperature
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Ceiling Light
+          description: device type
+        power:
+          type: string
+          enum:
+            - ON
+            - OFF
+          description: ON/OFF state
+        version:
+          type: string
+          description: the current firmware version, e.g. V4.2
+        brightness:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: the brightness value, range from 1 to 100
+        colorTemperature:
+          type: number
+          minimum: 2700
+          maximum: 6500
+          description: the color temperature value, range from 2700 to 6500
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.ColorBulbStatus:
+      type: object
+      required:
+        - deviceType
+        - power
+        - brightness
+        - version
+        - color
+        - colorTemperature
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Color Bulb
+          description: device type
+        power:
+          type: string
+          enum:
+            - ON
+            - OFF
+          description: ON/OFF state
+        brightness:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: the brightness value, range from 1 to 100
+        version:
+          type: string
+          description: the current BLE and Wi-Fi firmware version, e.g. V3.1-6.3
+        color:
+          type: string
+          description: the color value, RGB '255:255:255'
+        colorTemperature:
+          type: number
+          minimum: 2700
+          maximum: 6500
+          description: the color temperature value, range from 2700 to 6500
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.ContactSensorStatus:
       type: object
       required:
         - deviceType
-        - open
-        - moveDetected
-        - luminance
         - battery
         - version
+        - moveDetected
+        - openState
+        - brightness
       properties:
         deviceType:
           type: string
           enum:
-            - ContactSensor
+            - Contact Sensor
           description: device type
-        open:
-          type: boolean
-          description: detected open status
-        moveDetected:
-          type: boolean
-          description: detected move status
-        luminance:
-          type: number
-          description: luminance value of the environment where the device is located
         battery:
           type: number
           minimum: 0
@@ -1352,7 +3657,61 @@ components:
           description: the current battery level, 0-100
         version:
           type: string
-          description: the current firmware version, e.g. V1.3
+          description: the current firmware version, e.g. V4.2
+        moveDetected:
+          type: boolean
+          description: determines if motion is detected
+        openState:
+          type: string
+          enum:
+            - open
+            - close
+            - timeOutNotClose
+          description: the open state of the sensor. open, close, or timeOutNotClose
+        brightness:
+          type: string
+          enum:
+            - bright
+            - dim
+          description: the ambient brightness picked up by the sensor. bright or dim
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.Curtain3Status:
+      type: object
+      required:
+        - deviceType
+        - calibrate
+        - group
+        - moving
+        - battery
+        - version
+        - slidePosition
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Curtain3
+          description: device type
+        calibrate:
+          type: boolean
+          description: determines if the open position and the close position of a device have been properly calibrated or not
+        group:
+          type: boolean
+          description: determines if a Curtain is paired with or grouped with another Curtain or not
+        moving:
+          type: boolean
+          description: determines if a Curtain is moving or not
+        battery:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: the current battery level, 0-100
+        version:
+          type: string
+          description: the current firmware version, e.g. V4.2
+        slidePosition:
+          type: string
+          description: the percentage of the distance between the calibrated open position and closed position that Curtain has traversed
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.CurtainStatus:
@@ -1393,48 +3752,186 @@ components:
           description: the percentage of the distance between the calibrated open position and closed position that Curtain has traversed
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
-    DeviceStatus.HubRelatedStatus:
+    DeviceStatus.FloorCleaningRobotS10Status:
       type: object
       required:
         - deviceType
-        - version
+        - workingStatus
+        - onlineStatus
+        - battery
+        - waterBaseBattery
+        - taskType
       properties:
         deviceType:
           type: string
           enum:
-            - Hub
-            - Hub Plus
-            - Hub Mini
+            - Floor Cleaning Robot S10
+          description: device type
+        workingStatus:
+          type: string
+          enum:
+            - StandBy
+            - Clearing
+            - Paused
+            - GotoChargeBase
+            - Charging
+            - ChargeDone
+            - Dormant
+            - InTrouble
+            - InRemoteControl
+            - InDustCollecting
+          description: the working status of the device. StandBy, Clearing, Paused, GotoChargeBase, Charging, ChargeDone, Dormant, InTrouble, InRemoteControl, or InDustCollecting
+        onlineStatus:
+          type: string
+          enum:
+            - online
+            - offline
+          description: the connection status of the device. online or offline
+        battery:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: the current battery level
+        waterBaseBattery:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: the current battery level
+        taskType:
+          type: string
+          enum:
+            - standBy
+            - explore
+            - cleanAll
+            - cleanArea
+            - cleanRoom
+            - fillWater
+            - deepWashing
+            - backToCharge
+            - markingWaterBase
+            - drying
+            - collectDust
+            - remoteControl
+            - cleanWithExplorer
+            - fillWaterForHumi
+            - markingHumi
+          description: the current task in progress. standBy, explore, cleanAll, cleanArea, cleanRoom, fillWater, deepWashing, backToCharge, markingWaterBase, drying, collectDust, remoteControl, cleanWithExplorer, fillWaterForHumi, markingHumi
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.Hub2Status:
+      type: object
+      required:
+        - deviceType
+        - temperature
+        - lightLevel
+        - version
+        - humidity
+      properties:
+        deviceType:
+          type: string
+          enum:
             - Hub 2
           description: device type
+        temperature:
+          type: number
+          description: temperature in celsius
+        lightLevel:
+          type: number
+          description: the level of illuminance of the ambience light, 1~20
         version:
           type: string
-          description: the current firmware version, e.g. V3.1
+          description: the current firmware version, e.g. V4.2
+        humidity:
+          type: number
+          description: humidity percentage
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.HumidifierStatus:
       type: object
       required:
         - deviceType
-        - humidityLevel
-        - powerState
-        - battery
-        - version
+        - power
+        - humidity
+        - temperature
+        - nebulizationEfficiency
+        - auto
+        - childLock
+        - sound
+        - lackWater
       properties:
         deviceType:
           type: string
           enum:
             - Humidifier
           description: device type
-        humidityLevel:
-          type: number
-          description: current humidity level setting
-        powerState:
+        power:
           type: string
           enum:
-            - on
-            - off
-          description: current power state of the humidifier
+            - ON
+            - OFF
+          description: ON/OFF state
+        humidity:
+          type: number
+          description: humidity percentage
+        temperature:
+          type: number
+          description: temperature in celsius
+        nebulizationEfficiency:
+          type: number
+          description: atomization efficiency percentage
+        auto:
+          type: boolean
+          description: determines if a Humidifier is in Auto Mode or not
+        childLock:
+          type: boolean
+          description: determines if a Humidifier's safety lock is on or not
+        sound:
+          type: boolean
+          description: determines if a Humidifier is muted or not
+        lackWater:
+          type: boolean
+          description: determines if the water tank is empty or not
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.KeypadStatus:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Keypad
+          description: device type
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.KeypadTouchStatus:
+      type: object
+      required:
+        - deviceType
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Keypad Touch
+          description: device type
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.LockProStatus:
+      type: object
+      required:
+        - deviceType
+        - battery
+        - version
+        - lockState
+        - doorState
+        - calibrate
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Smart Lock Pro
+          description: device type
         battery:
           type: number
           minimum: 0
@@ -1442,28 +3939,39 @@ components:
           description: the current battery level, 0-100
         version:
           type: string
-          description: the current firmware version, e.g. V2.9
+          description: the current firmware version, e.g. V4.2
+        lockState:
+          type: string
+          enum:
+            - lock
+            - unlock
+          description: determines if locked or not
+        doorState:
+          type: string
+          enum:
+            - open
+            - close
+          description: determines if the door is closed or not
+        calibrate:
+          type: boolean
+          description: determines if Lock has been calibrated or not
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.LockStatus:
       type: object
       required:
         - deviceType
-        - lockState
         - battery
         - version
+        - lockState
+        - doorState
+        - calibrate
       properties:
         deviceType:
           type: string
           enum:
-            - Lock
+            - Smart Lock
           description: device type
-        lockState:
-          type: string
-          enum:
-            - locked
-            - unlocked
-          description: determines if the device is locked
         battery:
           type: number
           minimum: 0
@@ -1471,62 +3979,62 @@ components:
           description: the current battery level, 0-100
         version:
           type: string
-          description: the current firmware version, e.g. V1.7
+          description: the current firmware version, e.g. V4.2
+        lockState:
+          type: string
+          enum:
+            - lock
+            - unlock
+          description: determines if locked or not
+        doorState:
+          type: string
+          enum:
+            - open
+            - close
+          description: determines if the door is closed or not
+        calibrate:
+          type: boolean
+          description: determines if Lock has been calibrated or not
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.MeterPlusStatus:
       type: object
       required:
         - deviceType
-        - luminance
+        - battery
+        - version
+        - temperature
+        - humidity
       properties:
         deviceType:
           type: string
           enum:
             - MeterPlus
           description: device type
-        luminance:
+        battery:
           type: number
-          description: luminance value of the environment where the device is located
+          minimum: 0
+          maximum: 100
+          description: the current battery level, 0-100
+        version:
+          type: string
+          description: the current firmware version, e.g. V4.2
+        temperature:
+          type: number
+          description: temperature in celsius
+        humidity:
+          type: number
+          description: humidity percentage
       allOf:
-        - type: object
-          required:
-            - temperature
-            - humidity
-            - battery
-            - version
-            - deviceId
-            - hubDeviceId
-          properties:
-            temperature:
-              type: number
-              description: temperature value of the environment where the device is located
-            humidity:
-              type: number
-              description: humidity level in the environment where the device is located
-            battery:
-              type: number
-              minimum: 0
-              maximum: 100
-              description: the current battery level, 0-100
-            version:
-              type: string
-              description: the current firmware version, e.g. V2.5
-            deviceId:
-              type: string
-              description: device ID
-            hubDeviceId:
-              type: string
-              description: device's parent Hub ID
-          description: The template for omitting properties.
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.MeterStatus:
       type: object
       required:
         - deviceType
         - temperature
-        - humidity
-        - battery
         - version
+        - battery
+        - humidity
       properties:
         deviceType:
           type: string
@@ -1535,44 +4043,34 @@ components:
           description: device type
         temperature:
           type: number
-          description: temperature value of the environment where the device is located
-        humidity:
-          type: number
-          description: humidity level in the environment where the device is located
+          description: temperature in celsius
+        version:
+          type: string
+          description: the current firmware version, e.g. V4.2
         battery:
           type: number
           minimum: 0
           maximum: 100
           description: the current battery level, 0-100
-        version:
-          type: string
-          description: the current firmware version, e.g. V2.5
+        humidity:
+          type: number
+          description: humidity percentage
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.MotionSensorStatus:
       type: object
       required:
         - deviceType
-        - motionDetected
-        - movementCount
-        - luminance
         - battery
         - version
+        - moveDetected
+        - brightness
       properties:
         deviceType:
           type: string
           enum:
-            - MotionSensor
+            - Motion Sensor
           description: device type
-        motionDetected:
-          type: boolean
-          description: detected motion status
-        movementCount:
-          type: number
-          description: detected movement count
-        luminance:
-          type: number
-          description: luminance value of the environment where the device is located
         battery:
           type: number
           minimum: 0
@@ -1580,73 +4078,262 @@ components:
           description: the current battery level, 0-100
         version:
           type: string
-          description: the current firmware version, e.g. V1.8
+          description: the current firmware version, e.g. V4.2
+        moveDetected:
+          type: boolean
+          description: determines if motion is detected
+        brightness:
+          type: string
+          description: the ambient brightness picked up by the sensor. bright or dim
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.OutdoorMeterStatus:
+      type: object
+      required:
+        - deviceType
+        - battery
+        - version
+        - temperature
+        - humidity
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - WoIOSensor
+          description: device type
+        battery:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: the current battery level, 0-100
+        version:
+          type: string
+          description: the current firmware version, e.g. V4.2
+        temperature:
+          type: number
+          description: temperature in celsius
+        humidity:
+          type: number
+          description: humidity percentage
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.PlugMiniJpStatus:
+      type: object
+      required:
+        - deviceType
+        - voltage
+        - version
+        - weight
+        - electricityOfDay
+        - electricCurrent
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Plug Mini (JP)
+          description: device type
+        voltage:
+          type: number
+          description: the voltage of the device, measured in Volt
+        version:
+          type: string
+          description: the current BLE and Wi-Fi firmware version, e.g. V3.1-6.3
+        weight:
+          type: number
+          description: the power consumed in a day, measured in Watts
+        electricityOfDay:
+          type: number
+          description: the duration that the device has been used during a day, measured in minutes
+        electricCurrent:
+          type: number
+          description: the current of the device at the moment, measured in Amp
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.PlugMiniUsStatus:
+      type: object
+      required:
+        - deviceType
+        - voltage
+        - version
+        - weight
+        - electricityOfDay
+        - electricCurrent
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Plug Mini (US)
+          description: device type
+        voltage:
+          type: number
+          description: the voltage of the device, measured in Volt
+        version:
+          type: string
+          description: the current BLE and Wi-Fi firmware version, e.g. V3.1-6.3
+        weight:
+          type: number
+          description: the power consumed in a day, measured in Watts
+        electricityOfDay:
+          type: number
+          description: the duration that the device has been used during a day, measured in minutes
+        electricCurrent:
+          type: number
+          description: the current of the device at the moment, measured in Amp
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.PlugStatus:
       type: object
       required:
         - deviceType
-        - powerState
+        - power
         - version
+        - hubDeviceId
       properties:
         deviceType:
           type: string
           enum:
             - Plug
           description: device type
-        powerState:
+        power:
           type: string
           enum:
-            - on
-            - off
-          description: determines if the plug is on or off
+            - ON
+            - OFF
+          description: ON/OFF state
         version:
           type: string
-          description: the current firmware version, e.g. V2.2
+          description: the current Wi-Fi firmware version, e.g. V4.2
+        hubDeviceId:
+          type: string
+          description: device's parent Hub ID. 000000000000 when the device itself is a Hub or it is connected through Wi-Fi.
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
-    DeviceStatus.RemoteStatus:
+    DeviceStatus.RobotVacuumCleanerS1PlusStatus:
       type: object
       required:
         - deviceType
-        - version
+        - workingStatus
+        - onlineStatus
+        - battery
       properties:
         deviceType:
           type: string
           enum:
-            - Remote
+            - Robot Vacuum Cleaner S1 Plus
           description: device type
-        version:
+        workingStatus:
           type: string
-          description: the current firmware version, e.g. V3.0
+          enum:
+            - StandBy
+            - Clearing
+            - Paused
+            - GotoChargeBase
+            - Charging
+            - ChargeDone
+            - Dormant
+            - InTrouble
+            - InRemoteControl
+            - InDustCollecting
+          description: the working status of the device. StandBy, Clearing, Paused, GotoChargeBase, Charging, ChargeDone, Dormant, InTrouble, InRemoteControl, or InDustCollecting
+        onlineStatus:
+          type: string
+          enum:
+            - online
+            - offline
+          description: the connection status of the device. online or offline
+        battery:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: the current battery level
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
-    DeviceStatus.ThermostatStatus:
+    DeviceStatus.RobotVacuumCleanerS1Status:
       type: object
       required:
         - deviceType
-        - temperatureSetting
-        - mode
+        - workingStatus
+        - onlineStatus
+        - battery
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Robot Vacuum Cleaner S1
+          description: device type
+        workingStatus:
+          type: string
+          enum:
+            - StandBy
+            - Clearing
+            - Paused
+            - GotoChargeBase
+            - Charging
+            - ChargeDone
+            - Dormant
+            - InTrouble
+            - InRemoteControl
+            - InDustCollecting
+          description: the working status of the device. StandBy, Clearing, Paused, GotoChargeBase, Charging, ChargeDone, Dormant, InTrouble, InRemoteControl, or InDustCollecting
+        onlineStatus:
+          type: string
+          enum:
+            - online
+            - offline
+          description: the connection status of the device. online or offline
+        battery:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: the current battery level
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.StripLightStatus:
+      type: object
+      required:
+        - deviceType
+        - power
+        - version
+        - brightness
+        - color
+      properties:
+        deviceType:
+          type: string
+          enum:
+            - Strip Light
+          description: device type
+        power:
+          type: string
+          enum:
+            - ON
+            - OFF
+          description: ON/OFF state
+        version:
+          type: string
+          description: the current BLE and Wi-Fi firmware version, e.g. V3.1-6.3
+        brightness:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: the brightness value, range from 1 to 100
+        color:
+          type: string
+          description: the color value, RGB '255:255:255'
+      allOf:
+        - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    DeviceStatus.WaterLeakDetectorStatus:
+      type: object
+      required:
+        - deviceType
         - battery
         - version
+        - status
       properties:
         deviceType:
           type: string
           enum:
-            - Thermostat
+            - Water Detector
           description: device type
-        temperatureSetting:
-          type: number
-          description: current temperature setting
-        mode:
-          type: string
-          enum:
-            - heat
-            - cool
-            - auto
-            - off
-          description: current mode of the thermostat
         battery:
           type: number
           minimum: 0
@@ -1654,9 +4341,27 @@ components:
           description: the current battery level, 0-100
         version:
           type: string
-          description: the current firmware version, e.g. V4.5
+          description: the current firmware version, e.g. V4.2
+        status:
+          type: number
+          enum:
+            - 0
+            - 1
+          description: 0, dry. 1, leak detected
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
+    Scene.SceneListResponse:
+      type: object
+      required:
+        - sceneId
+        - sceneName
+      properties:
+        sceneId:
+          type: string
+          description: a scene's ID
+        sceneName:
+          type: string
+          description: a scene's name
     SystemErrorResponseBody:
       type: object
       allOf:
@@ -1674,6 +4379,28 @@ components:
               enum:
                 - System error
       description: Device internal error due to device states not synchronized with server
+    WebhookSetupConfigure.WebhookSetupConfigureRequest:
+      type: object
+      required:
+        - action
+        - url
+        - deviceList
+      properties:
+        action:
+          type: string
+          enum:
+            - setupWebhook
+          description: the type of actions
+        url:
+          type: string
+          description: the url where all the events are sent to
+        deviceList:
+          type: string
+          enum:
+            - ALL
+          description: the list of device ids, currently only supports 'ALL'
+    WebhookSetupConfigure.WebhookSetupConfigureResponse:
+      type: object
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
@@ -1688,6 +4415,6 @@ components:
       in: header
       name: nonce
 servers:
-  - url: https://api.switch-bot.com
-    description: Single server endpoint
+  - url: https://api.switch-bot.com/v1.1
+    description: SwitchBot API v1.1
     variables: {}
