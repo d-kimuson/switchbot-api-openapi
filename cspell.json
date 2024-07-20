@@ -10,6 +10,8 @@
     "dmmf",
     "esbenp",
     "fabbrica",
+    "Humi",
+    "Keypand",
     "kimuson",
     "lefthook",
     "mise",
@@ -17,7 +19,9 @@
     "nocheck",
     "Omittable",
     "outdir",
+    "passcodes",
     "preinstall",
+    "redoc",
     "redocly",
     "switchbot",
     "syncpack",
@@ -25,10 +29,7 @@
     "tsup",
     "typecheck",
     "typespec",
-    "Uncapitalize",
-    "passcodes",
-    "Humi",
-    "Keypand"
+    "Uncapitalize"
   ],
   "ignorePaths": [
     "pnpm-lock.yaml",

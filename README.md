@@ -11,13 +11,29 @@ Some parts of the schema are written using LLM, so quality cannot be guaranteed.
 You can download and use the OpenAPI Spec with the following command.
 
 ```bash
-$ curl 'https://raw.githubusercontent.com/d-kimuson/switchbot-api-openapi/main/dist/%40typespec/openapi3/openapi.yaml?token=GHSAT0AAAAAACTGDF377DZU5X3WMTFBX6JQZUNNARQ' > ./switchbot-openapi.yaml
+$ curl 'https://raw.githubusercontent.com/d-kimuson/switchbot-api-openapi/main/dist/%40typespec/openapi3/openapi.yaml' > ./switchbot-openapi.yaml
 ```
+
+## Purpose
+
+The main goal of this project is to provide machine-readable documentation. With schemas written in OpenAPI, you can use excellent code generation tools like OpenAPI Generator to make API calls productively.
+By cloning the repository, you can view the redoc-based API documentation. While it's structured and may be helpful, our primary objective is to define machine-readable schemas, not to prioritize human readability.
+
+## Scope of Support
+
+This project supports Switchbot API v1.1 endpoints.
+However, since the TypeSpec we're using doesn't support OpenAPI webhooks, the schemas for incoming webhook requests are not defined.
 
 ## Contribute
 
-Most of source code is written out using LLM and is not accurate.
-Contributions are welcome.
+Welcome!
+
+Some parts of source code is written out using LLM and is not accurate.
+
+In addition, the API definitions may contain errors as they are based on our interpretation of the documentation rather than exhaustive testing.
+Additionally, since we cannot generate these automatically, there's a possibility that our definitions may not reflect the latest updates to the official Switchbot documentation.
+
+If you find any discrepancies between our definitions and the actual API behavior, we welcome your contributions.
 
 ### Structure
 
