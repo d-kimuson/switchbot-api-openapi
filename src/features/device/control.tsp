@@ -176,7 +176,7 @@ model FloorCleaningRobotS10SetVolumeCommand {
   command: "setVolume";
 
   @doc("set volume, 1-100")
-  @minValue(0)
+  @minValue(1)
   @maxValue(100)
   parameter: numeric;
 

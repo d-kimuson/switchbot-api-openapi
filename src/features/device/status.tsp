@@ -7,7 +7,9 @@ alias PhysicalDeviceStatus =
   | BotStatus
   | PlugStatus
   | CurtainStatus
+  | Curtain3Status
   | MeterStatus
+  | MeterPlusStatus
   | MotionSensorStatus
   | ContactSensorStatus
   | ColorBulbStatus
@@ -27,7 +29,8 @@ alias PhysicalDeviceStatus =
   | BatteryCirculatorFanStatus
   | LockProStatus
   | FloorCleaningRobotS10Status
-  | WaterLeakDetectorStatus;
+  | WaterLeakDetectorStatus
+  | BlindTiltStatus;
 
 // model
 @discriminator("deviceType")
@@ -80,7 +83,7 @@ model CurtainStatus extends BaseDeviceStatus {
   version: string;
 
   @doc("the percentage of the distance between the calibrated open position and closed position that Curtain has traversed")
-  slidePosition: string;
+  slidePosition: numeric;
 }
 
 model Curtain3Status extends BaseDeviceStatus {
@@ -105,7 +108,7 @@ model Curtain3Status extends BaseDeviceStatus {
   version: string;
 
   @doc("the percentage of the distance between the calibrated open position and closed position that Curtain has traversed")
-  slidePosition: string;
+  slidePosition: numeric;
 }
 
 model MeterStatus extends BaseDeviceStatus {
@@ -235,7 +238,7 @@ model MotionSensorStatus extends BaseDeviceStatus {
   moveDetected: boolean;
 
   @doc("the ambient brightness picked up by the sensor. bright or dim")
-  brightness: string;
+  brightness: "bright" | "dim";
 }
 
 model ContactSensorStatus extends BaseDeviceStatus {
@@ -367,9 +370,6 @@ model PlugStatus extends BaseDeviceStatus {
 
   @doc("the current Wi-Fi firmware version, e.g. V4.2")
   version: string;
-
-  @doc("device's parent Hub ID. 000000000000 when the device itself is a Hub or it is connected through Wi-Fi.")
-  hubDeviceId: string;
 }
 
 model StripLightStatus extends BaseDeviceStatus {

@@ -51,6 +51,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 開発時の注意点
 
+- 依存を追加・編集・削除する場合には、package.json を直接編集するのではなく、pnpm コマンドを用いて行うこと
+  - これにより最新バージョンを追加し、正確なソート順で依存を管理することができる
+
 ### TypeSpec編集
 
 - 新しいエンドポイントを追加する場合は、適切な機能フォルダにファイルを作成し、main.tspでimport

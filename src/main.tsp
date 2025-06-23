@@ -23,10 +23,11 @@ using TypeSpec.Http;
   [
     ApiKeyAuth<ApiKeyLocation.header, "Authorization">,
     ApiKeyAuth<ApiKeyLocation.header, "sign">,
-    ApiKeyAuth<ApiKeyLocation.header, "nonce">
+    ApiKeyAuth<ApiKeyLocation.header, "nonce">,
+    ApiKeyAuth<ApiKeyLocation.header, "t">
   ]
 )
-namespace SwithcbotAPI;
+namespace SwitchBotAPI;
 
 @route("/devices")
 @tag("Devices")

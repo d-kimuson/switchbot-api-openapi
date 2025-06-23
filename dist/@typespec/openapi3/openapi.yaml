@@ -425,7 +425,9 @@ paths:
                           - $ref: '#/components/schemas/DeviceStatus.BotStatus'
                           - $ref: '#/components/schemas/DeviceStatus.PlugStatus'
                           - $ref: '#/components/schemas/DeviceStatus.CurtainStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.Curtain3Status'
                           - $ref: '#/components/schemas/DeviceStatus.MeterStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.MeterPlusStatus'
                           - $ref: '#/components/schemas/DeviceStatus.MotionSensorStatus'
                           - $ref: '#/components/schemas/DeviceStatus.ContactSensorStatus'
                           - $ref: '#/components/schemas/DeviceStatus.ColorBulbStatus'
@@ -446,6 +448,7 @@ paths:
                           - $ref: '#/components/schemas/DeviceStatus.LockProStatus'
                           - $ref: '#/components/schemas/DeviceStatus.FloorCleaningRobotS10Status'
                           - $ref: '#/components/schemas/DeviceStatus.WaterLeakDetectorStatus'
+                          - $ref: '#/components/schemas/DeviceStatus.BlindTiltStatus'
                     description: Returns an object that contains two device lists
                   - $ref: '#/components/schemas/SystemErrorResponseBody'
         '400':
@@ -1433,6 +1436,7 @@ security:
   - ApiKeyAuth: []
     ApiKeyAuth_: []
     ApiKeyAuth__: []
+    ApiKeyAuth___: []
 components:
   schemas:
     Device.BaseDevice:
@@ -1474,6 +1478,7 @@ components:
           Plug Mini (JP): '#/components/schemas/Device.PlugMiniJp'
           Smart Lock: '#/components/schemas/Device.Lock'
           MeterPlus: '#/components/schemas/Device.MeterPlus'
+          Keypad: '#/components/schemas/Device.Keypad'
           Keypad Touch: '#/components/schemas/Device.KeypadTouch'
           Ceiling Light: '#/components/schemas/Device.CeilingLight'
           Ceiling Light Pro: '#/components/schemas/Device.CeilingLightPro'
@@ -1658,10 +1663,10 @@ components:
     Device.DeviceListResponse:
       type: object
       required:
-        - devices
+        - deviceList
         - infraredRemoteList
       properties:
-        devices:
+        deviceList:
           type: array
           items:
             anyOf:
@@ -1789,6 +1794,8 @@ components:
           items:
             $ref: '#/components/schemas/Device.Passcode'
           description: a list of passcodes
+      allOf:
+        - $ref: '#/components/schemas/Device.BaseDevice'
     Device.KeypadTouch:
       type: object
       required:
@@ -2037,6 +2044,8 @@ components:
             - Speaker
             - Water Heater
             - Robot Vacuum Cleaner
+            - IPTV/Streamer
+            - Others
           description: device type
         hubDeviceId:
           type: string
@@ -2704,7 +2713,7 @@ components:
             - setVolume
         parameter:
           type: number
-          minimum: 0
+          minimum: 1
           maximum: 100
           description: set volume, 1-100
         commandType:
@@ -3358,7 +3367,9 @@ components:
         mapping:
           Plug: '#/components/schemas/DeviceStatus.PlugStatus'
           Curtain: '#/components/schemas/DeviceStatus.CurtainStatus'
+          Curtain3: '#/components/schemas/DeviceStatus.Curtain3Status'
           Meter: '#/components/schemas/DeviceStatus.MeterStatus'
+          MeterPlus: '#/components/schemas/DeviceStatus.MeterPlusStatus'
           Motion Sensor: '#/components/schemas/DeviceStatus.MotionSensorStatus'
           Contact Sensor: '#/components/schemas/DeviceStatus.ContactSensorStatus'
           Color Bulb: '#/components/schemas/DeviceStatus.ColorBulbStatus'
@@ -3379,8 +3390,6 @@ components:
           Smart Lock Pro: '#/components/schemas/DeviceStatus.LockProStatus'
           Floor Cleaning Robot S10: '#/components/schemas/DeviceStatus.FloorCleaningRobotS10Status'
           Water Detector: '#/components/schemas/DeviceStatus.WaterLeakDetectorStatus'
-          Curtain3: '#/components/schemas/DeviceStatus.Curtain3Status'
-          MeterPlus: '#/components/schemas/DeviceStatus.MeterPlusStatus'
           Blind Tilt: '#/components/schemas/DeviceStatus.BlindTiltStatus'
     DeviceStatus.BatteryCirculatorFanStatus:
       type: object
@@ -3712,7 +3721,7 @@ components:
           type: string
           description: the current firmware version, e.g. V4.2
         slidePosition:
-          type: string
+          type: number
           description: the percentage of the distance between the calibrated open position and closed position that Curtain has traversed
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
@@ -3750,7 +3759,7 @@ components:
           type: string
           description: the current firmware version, e.g. V4.2
         slidePosition:
-          type: string
+          type: number
           description: the percentage of the distance between the calibrated open position and closed position that Curtain has traversed
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
@@ -4086,6 +4095,9 @@ components:
           description: determines if motion is detected
         brightness:
           type: string
+          enum:
+            - bright
+            - dim
           description: the ambient brightness picked up by the sensor. bright or dim
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
@@ -4189,7 +4201,6 @@ components:
         - deviceType
         - power
         - version
-        - hubDeviceId
       properties:
         deviceType:
           type: string
@@ -4205,9 +4216,6 @@ components:
         version:
           type: string
           description: the current Wi-Fi firmware version, e.g. V4.2
-        hubDeviceId:
-          type: string
-          description: device's parent Hub ID. 000000000000 when the device itself is a Hub or it is connected through Wi-Fi.
       allOf:
         - $ref: '#/components/schemas/DeviceStatus.BaseDeviceStatus'
     DeviceStatus.RobotVacuumCleanerS1PlusStatus:
@@ -4416,6 +4424,10 @@ components:
       type: apiKey
       in: header
       name: nonce
+    ApiKeyAuth___:
+      type: apiKey
+      in: header
+      name: t
 servers:
   - url: https://api.switch-bot.com/v1.1
     description: SwitchBot API v1.1

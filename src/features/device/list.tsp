@@ -3,7 +3,7 @@ namespace Device;
 // Device List API Response
 model DeviceListResponse {
   @doc("a list of physical devices")
-  devices: PhysicalDevice[];
+  deviceList: PhysicalDevice[];
 
   @doc("a list of virtual infrared remote devices")
   infraredRemoteList: Array<RemoteDevice>;
@@ -139,7 +139,7 @@ model LockPro extends BaseDevice {
   lockDevicesIds: Array<string>;
 }
 
-model Keypad {
+model Keypad extends BaseDevice {
   @doc("device type")
   deviceType: "Keypad";
 
@@ -355,7 +355,9 @@ model RemoteDevice {
     | "Air Purifier"
     | "Speaker"
     | "Water Heater"
-    | "Robot Vacuum Cleaner";
+    | "Robot Vacuum Cleaner"
+    | "IPTV/Streamer"
+    | "Others";
 
   @doc("remote device's parent Hub ID")
   hubDeviceId: string;
