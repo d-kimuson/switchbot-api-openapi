@@ -11,23 +11,25 @@
     }
   },
   "scripts": {
-    "dev": "pnpm /^dev:.*/",
+    "dev": "run-p 'dev:*'",
     "dev:tsp": "pnpm build:tsp --watch",
     "dev:docs": "redocly preview-docs",
     "build": "pnpm build:tsp && pnpm build:docs",
     "build:tsp": "tsp compile ./src --output-dir ./dist",
     "build:docs": "redocly build-docs -o ./dist/doc/index.html",
-    "fix": "pnpm /^fix:.*/",
+    "fix": "run-s 'fix:*'",
     "fix:prettier": "pnpm run:prettier . --write",
     "fixAll:cspell": "node ./scripts/update_cspell_words.mjs",
-    "lint": "pnpm /^lint:.*/",
+    "lint": "run-s 'lint:*'",
     "lint:cspell": "cspell lint './**/*.{tsx,ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}' --gitignore --cache",
     "lint:prettier": "pnpm run:prettier . --check",
     "lint:redocly": "redocly lint",
     "typecheck": "pnpm build:tsp --noEmit",
     "preinstall": "pnpm /^setup:.*/",
     "run:prettier": "prettier --ignore-unknown --no-error-on-unmatched-pattern --cache",
-    "setup:check-manager": "npx -y only-allow pnpm"
+    "setup:check-manager": "npx -y only-allow pnpm",
+    "claude": "claude --mcp-config .claude/mcp.json",
+    "claude:allow-all": "pnpm claude -- --dangerously-skip-permissions"
   },
   "dependencies": {
     "@typespec/best-practices": "0.46.0-dev.0",
@@ -39,6 +41,7 @@
   },
   "devDependencies": {
     "@actions/github": "6.0.0",
+    "@anthropic-ai/claude-code": "^1.0.31",
     "@octokit/rest": "20.0.2",
     "@redocly/cli": "^1.17.1",
     "@typespec/prettier-plugin-typespec": "^0.57.0",
@@ -46,6 +49,7 @@
     "cspell": "7.3.9",
     "cz-conventional-changelog": "^3.3.0",
     "lefthook": "1.6.7",
+    "npm-run-all2": "^8.0.4",
     "prettier": "3.2.5"
   },
   "engines": {

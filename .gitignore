@@ -139,3 +139,7 @@ lefthook-local.yml
 
 # dist
 dist/doc
+
+# Claude Code
+.claude/mcp.json
+.claude/settings.local.json
