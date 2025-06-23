@@ -33,18 +33,18 @@
   },
   "dependencies": {
     "@typespec/best-practices": "0.46.0-dev.0",
-    "@typespec/compiler": "^0.57.0",
-    "@typespec/http": "^0.57.0",
-    "@typespec/openapi": "^0.57.0",
-    "@typespec/openapi3": "^0.57.0",
-    "@typespec/rest": "^0.57.0"
+    "@typespec/compiler": "^1.1.0",
+    "@typespec/http": "^1.1.0",
+    "@typespec/openapi": "^1.1.0",
+    "@typespec/openapi3": "^1.1.0",
+    "@typespec/rest": "^0.71.0"
   },
   "devDependencies": {
     "@actions/github": "6.0.0",
     "@anthropic-ai/claude-code": "^1.0.31",
     "@octokit/rest": "20.0.2",
     "@redocly/cli": "^1.17.1",
-    "@typespec/prettier-plugin-typespec": "^0.57.0",
+    "@typespec/prettier-plugin-typespec": "^1.1.0",
     "commitizen": "4.3.0",
     "cspell": "7.3.9",
     "cz-conventional-changelog": "^3.3.0",

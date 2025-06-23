@@ -3,10 +3,6 @@ emit:
 
 options:
   "@typespec/openapi3":
-    output-file: "{service-name}.{version}.openapi.yaml"
+    output-file: "openapi.yaml"
     file-type: yaml
     omit-unreachable-types: true
-
-linter:
-  extends:
-    - "@typespec/best-practices/recommended"

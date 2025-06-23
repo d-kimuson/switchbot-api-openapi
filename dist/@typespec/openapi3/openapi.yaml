@@ -12,8 +12,6 @@ tags:
 paths:
   /devices:
     get:
-      tags:
-        - Devices
       operationId: DevicesRoute_list
       summary: Get Device List
       description: The devices API is used to access the properties and states of SwitchBot devices and to send control commands to those devices.
@@ -160,10 +158,10 @@ paths:
                       - Internal Server Error
                 required:
                   - message
-  /devices/{deviceId}/commands:
-    post:
       tags:
         - Devices
+  /devices/{deviceId}/commands:
+    post:
       operationId: DevicesRoute_control
       summary: Send Device Control Command
       description: Send control commands to physical devices and virtual infrared remote devices.
@@ -326,6 +324,8 @@ paths:
                       - Internal Server Error
                 required:
                   - message
+      tags:
+        - Devices
       requestBody:
         required: true
         content:
@@ -390,8 +390,6 @@ paths:
                 - $ref: '#/components/schemas/DeviceControl.OthersCommand'
   /devices/{id}/status:
     get:
-      tags:
-        - Devices
       operationId: DevicesRoute_getStatus
       summary: Get Device Status
       description: Get the status of a physical device that has been added to the current user's account.
@@ -567,10 +565,10 @@ paths:
                       - Internal Server Error
                 required:
                   - message
+      tags:
+        - Devices
   /scenes:
     get:
-      tags:
-        - Scenes
       operationId: SceneRoute_list
       summary: Get scene list
       description: Get a list of manual scenes created by the current user.
@@ -717,10 +715,10 @@ paths:
                       - Internal Server Error
                 required:
                   - message
+      tags:
+        - Scenes
   /webhook/deleteWebhook:
     post:
-      tags:
-        - Webhook
       operationId: WebhookRoute_deleteWebhook
       summary: Delete webhook
       description: Delete the configuration of the webhook
@@ -867,6 +865,8 @@ paths:
                       - Internal Server Error
                 required:
                   - message
+      tags:
+        - Webhook
       requestBody:
         required: true
         content:
@@ -887,8 +887,6 @@ paths:
                 - url
   /webhook/queryWebhook:
     post:
-      tags:
-        - Webhook
       operationId: WebhookRoute_queryWebhook
       summary: Get webhook configuration
       description: Get the current configuration info of the webhook
@@ -1067,6 +1065,8 @@ paths:
                       - Internal Server Error
                 required:
                   - message
+      tags:
+        - Webhook
       requestBody:
         required: true
         content:
@@ -1099,8 +1099,6 @@ paths:
                     - urls
   /webhook/setupWebhook:
     post:
-      tags:
-        - Webhook
       operationId: WebhookRoute_setupWebhook
       summary: Configure webhook
       description: Configure the url that all the webhook events will be sent to
@@ -1247,6 +1245,8 @@ paths:
                       - Internal Server Error
                 required:
                   - message
+      tags:
+        - Webhook
       requestBody:
         required: true
         content:
@@ -1255,8 +1255,6 @@ paths:
               $ref: '#/components/schemas/WebhookSetupConfigure.WebhookSetupConfigureRequest'
   /webhook/updateWebhook:
     post:
-      tags:
-        - Webhook
       operationId: WebhookRoute_updateWebhook
       summary: Update webhook configuration
       description: Update the configuration of the webhook
@@ -1403,6 +1401,8 @@ paths:
                       - Internal Server Error
                 required:
                   - message
+      tags:
+        - Webhook
       requestBody:
         required: true
         content:
@@ -1442,6 +1442,7 @@ components:
         - deviceName
         - enableCloudService
         - hubDeviceId
+        - deviceType
       properties:
         deviceId:
           type: string
@@ -2115,7 +2116,7 @@ components:
           anyOf:
             - type: string
               enum:
-                - off
+                - 'off'
             - type: number
               enum:
                 - 1
@@ -3341,6 +3342,7 @@ components:
       required:
         - deviceId
         - hubDeviceId
+        - deviceType
       properties:
         deviceId:
           type: string
@@ -3422,8 +3424,8 @@ components:
         power:
           type: string
           enum:
-            - ON
-            - OFF
+            - 'ON'
+            - 'OFF'
           description: ON/OFF state
         nightStatus:
           type: number
@@ -3435,14 +3437,14 @@ components:
         oscillation:
           type: string
           enum:
-            - on
-            - off
+            - 'on'
+            - 'off'
           description: 'set horizontal oscillation. turn on: on; turn off: off'
         verticalOscillation:
           type: string
           enum:
-            - on
-            - off
+            - 'on'
+            - 'off'
           description: 'set vertical oscillation. turn on: on; turn off: off'
         chargingStatus:
           type: string
@@ -3506,8 +3508,8 @@ components:
         power:
           type: string
           enum:
-            - ON
-            - OFF
+            - 'ON'
+            - 'OFF'
           description: ON/OFF state
         battery:
           type: number
@@ -3543,8 +3545,8 @@ components:
         power:
           type: string
           enum:
-            - ON
-            - OFF
+            - 'ON'
+            - 'OFF'
           description: ON/OFF state
         version:
           type: string
@@ -3578,8 +3580,8 @@ components:
         power:
           type: string
           enum:
-            - ON
-            - OFF
+            - 'ON'
+            - 'OFF'
           description: ON/OFF state
         version:
           type: string
@@ -3614,8 +3616,8 @@ components:
         power:
           type: string
           enum:
-            - ON
-            - OFF
+            - 'ON'
+            - 'OFF'
           description: ON/OFF state
         brightness:
           type: number
@@ -3867,8 +3869,8 @@ components:
         power:
           type: string
           enum:
-            - ON
-            - OFF
+            - 'ON'
+            - 'OFF'
           description: ON/OFF state
         humidity:
           type: number
@@ -4197,8 +4199,8 @@ components:
         power:
           type: string
           enum:
-            - ON
-            - OFF
+            - 'ON'
+            - 'OFF'
           description: ON/OFF state
         version:
           type: string
@@ -4305,8 +4307,8 @@ components:
         power:
           type: string
           enum:
-            - ON
-            - OFF
+            - 'ON'
+            - 'OFF'
           description: ON/OFF state
         version:
           type: string

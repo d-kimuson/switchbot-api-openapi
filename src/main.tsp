@@ -14,13 +14,9 @@ import "./features/webhook/delete.tsp";
 
 using TypeSpec.Http;
 
-@service({
-  title: "SwitchBot API",
-})
+@service(#{ title: "SwitchBot API" })
 @doc("SwitchBot API methods for IoT devices")
-@TypeSpec.OpenAPI.info({
-  version: "1.1",
-})
+@TypeSpec.OpenAPI.info(#{ version: "1.1" })
 @TypeSpec.OpenAPI.externalDocs("https://github.com/OpenWonderLabs/SwitchBotAPI/blob/main/README.md")
 @server("https://api.switch-bot.com/v1.1", "SwitchBot API v1.1")
 @useAuth(
